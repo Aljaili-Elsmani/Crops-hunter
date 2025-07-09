@@ -1,34 +1,47 @@
-<!-- templates/base.html -->
 <!DOCTYPE html>
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
     <title>Crops Hunter</title>
     <style>
-        body { font-family: Arial; margin: 0; padding: 0; }
-        header {
-            background-color: #2d6a4f;
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
             padding: 20px;
-            color: white;
+            direction: rtl;
+            text-align: right;
+        }
+
+        header {
             text-align: center;
+            margin-bottom: 30px;
         }
-        nav {
-            background-color: #40916c;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            padding: 10px;
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            text-align: center;
+            margin-bottom: 30px;
         }
-        nav a {
-            color: white;
+
+        nav ul li {
+            display: inline;
+            margin: 0 15px;
+        }
+
+        nav ul li a {
             text-decoration: none;
+            color: #007BFF;
             font-weight: bold;
         }
-        nav a:hover {
-            text-decoration: underline;
+
+        nav ul li a:hover {
+            color: #0056b3;
         }
+
         .container {
-            padding: 20px;
+            max-width: 900px;
+            margin: auto;
         }
     </style>
 </head>
@@ -36,14 +49,19 @@
     <header>
         <h1>Crops Hunter</h1>
     </header>
+
     <nav>
-        <a href="/">الصفحة الرئيسية</a>
-        <a href="/admin">إدارة المنتجات</a>
-        <a href="/about">About Us</a>
-        <a href="/contact">للتواصل معنا</a>
+        <ul>
+            <li><a href="/">الصفحة الرئيسية</a></li>
+            <li><a href="/admin">إدارة المنتجات</a></li>
+            <li><a href="/contact">للتواصل معنا</a></li>
+            <li><a href="/about">About Us</a></li>
+        </ul>
     </nav>
+
     <div class="container">
-        {% block content %}{% endblock %}
+        {% block content %}
+        {% endblock %}
     </div>
 </body>
 </html>
