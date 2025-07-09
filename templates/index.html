@@ -1,148 +1,32 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>Crops Hunter - الصفحة الرئيسية</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            font-family: 'Tahoma', sans-serif;
-            margin: 0;
-            background-color: #f5f5f5;
-        }
-
-        header {
-            background-color: #000;
-            color: #FFD600;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        header h1 {
-            margin: 0;
-            font-size: 24px;
-        }
-
-        nav a {
-            color: #FFD600;
-            margin-left: 20px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .search-bar {
-            background-color: #fff;
-            padding: 10px 20px;
-            display: flex;
-            justify-content: center;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .search-bar input {
-            width: 80%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-            padding: 20px;
-        }
-
-        .product-card {
-            background-color: #fff;
-            border-radius: 10px;
-            box-shadow: 0 0 8px rgba(0,0,0,0.1);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .product-card img {
-            width: 100%;
-            height: 150px;
-            object-fit: cover;
-        }
-
-        .product-details {
-            padding: 15px;
-        }
-
-        .product-details h3 {
-            margin: 0 0 10px;
-            font-size: 18px;
-            color: #333;
-        }
-
-        .product-details p {
-            margin: 0;
-            color: #777;
-        }
-
-        .whatsapp-btn {
-            background-color: #25D366;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            font-weight: bold;
-            text-decoration: none;
-            border-top: 1px solid #eee;
-        }
-
-        .whatsapp-btn:hover {
-            background-color: #1ebc59;
-        }
-
-        @media (max-width: 600px) {
-            header, .search-bar {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .search-bar input {
-                width: 100%;
-            }
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>المنتجات</title>
+  <style>
+    body { font-family: Arial; padding: 20px; direction: rtl; }
+    h2 { color: #2c3e50; }
+    .product { padding: 10px; border-bottom: 1px solid #ddd; }
+    .delete-link { color: red; margin-right: 10px; text-decoration: none; }
+  </style>
 </head>
 <body>
+  <h1>المنتجات المتاحة</h1>
 
-<header>
-    <h1>Crops Hunter</h1>
-    <nav>
-        <a href="/">الرئيسية</a>
-        <a href="/admin">إدارة المنتجات</a>
-        <a href="https://wa.me/+249916399000" target="_blank">اطلب عبر واتساب</a>
-    </nav>
-</header>
-
-<div class="search-bar">
-    <input type="text" placeholder="ابحث عن منتج... (غير مفعل بعد)">
-</div>
-
-<div class="products">
+  {% if products %}
     {% for category, items in products.items() %}
-        {% for name, product in items.items() %}
-        <div class="product-card">
-            <img src="{{ product.image if product.image else 'https://via.placeholder.com/300x150?text=No+Image' }}" alt="{{ name }}">
-            <div class="product-details">
-                <h3>{{ name }}</h3>
-                <p>{{ product.price }} SDG</p>
-            </div>
-            <a class="whatsapp-btn" href="https://wa.me/+249916399000?text=مرحبًا، أريد طلب {{ name }} بسعر {{ product.price }} SDG" target="_blank">
-                اطلب عبر واتساب
-            </a>
+      <h2>{{ category }}</h2>
+      {% for product, details in items.items() %}
+        <div class="product">
+          <strong>{{ product }}</strong> - {{ details.price }} SDG
+          <a class="delete-link" href="/delete/{{ category }}/{{ product | urlencode }}" onclick="return confirm('هل أنت متأكد من الحذف؟');">🗑 حذف</a>
         </div>
-        {% endfor %}
+      {% endfor %}
     {% endfor %}
-</div>
+  {% else %}
+    <p>لا توجد منتجات حالياً.</p>
+  {% endif %}
 
+  <p><a href="/admin">➕ إضافة منتج</a></p>
 </body>
 </html>
