@@ -1,21 +1,25 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <title>أسعار اليوم - Crops Hunter</title>
     <style>
-        body { font-family: Arial; background: #f8f8f8; text-align: center; padding: 40px; }
-        h1 { color: #2c3e50; }
-        .price-box { margin: 20px auto; background: white; padding: 20px; border-radius: 8px; width: 300px; box-shadow: 0 0 10px #ccc; }
-        .item { margin: 10px 0; font-size: 18px; }
+        body { font-family: Arial; background: #f8f8f8; padding: 40px; }
+        h1 { color: #2c3e50; text-align: center; }
+        .category { margin-bottom: 30px; }
+        .category h2 { background: #3498db; color: white; padding: 10px; border-radius: 6px; }
+        .product { margin: 8px 0; font-size: 18px; padding-left: 15px; }
     </style>
 </head>
 <body>
     <h1>الأسعار اليومية</h1>
-    <div class="price-box">
-        {% for item, price in prices.items() %}
-            <div class="item">{{ item }}: {{ price }}</div>
-        {% endfor %}
-    </div>
+    {% for category, products in prices.items() %}
+        <div class="category">
+            <h2>{{ category }}</h2>
+            {% for product, price in products.items() %}
+                <div class="product">{{ product }} : {{ price }}</div>
+            {% endfor %}
+        </div>
+    {% endfor %}
 </body>
 </html>
