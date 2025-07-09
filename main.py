@@ -1,5 +1,6 @@
 from flask import Flask, render_template
 import json
+import os
 
 app = Flask(__name__)
 
@@ -17,5 +18,7 @@ def index():
 def admin():
     return render_template('admin.html')
 
+# هذا الجزء مهم جدًا لتشغيله على Render
 if __name__ == '__main__':
-    app.run(debug=True)
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
