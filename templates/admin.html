@@ -1,46 +1,32 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8" />
-    <title>لوحة التحكم - Crops Hunter</title>
+    <meta charset="UTF-8">
+    <title>إدارة المنتجات</title>
     <style>
-        body { font-family: Arial; background: #f4f4f4; padding: 40px; }
-        form { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 0 10px #ccc; }
-        label { display: block; margin: 15px 0 5px; }
-        input[type=text] { width: 100%; padding: 8px; box-sizing: border-box; }
-        button { margin-top: 15px; padding: 10px 15px; background: #3498db; color: white; border: none; border-radius: 4px; cursor: pointer; }
-        h2 { text-align: center; }
-        .existing { max-width: 600px; margin: 40px auto; }
-        .category { margin-bottom: 20px; }
-        .category h3 { background: #2980b9; color: white; padding: 6px; border-radius: 5px; }
-        .product { padding-left: 20px; }
+        body { font-family: Arial; direction: rtl; background: #f0f0f0; text-align: center; padding: 40px; }
+        form { background: white; padding: 30px; display: inline-block; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
+        input, select, button { margin: 10px 0; padding: 10px; width: 250px; border-radius: 5px; border: 1px solid #aaa; }
+        h1 { color: #2c3e50; }
     </style>
 </head>
 <body>
-    <h2>لوحة التحكم - إضافة أو تعديل الأسعار</h2>
+    <h1>إضافة منتج جديد</h1>
     <form method="POST">
-        <label for="category">التصنيف (مثلاً: بقوليات):</label>
-        <input type="text" id="category" name="category" required />
-        
-        <label for="product">اسم المنتج:</label>
-        <input type="text" id="product" name="product" required />
-        
-        <label for="price">السعر (مثلاً: 50,000 SDG):</label>
-        <input type="text" id="price" name="price" required />
-        
-        <button type="submit">حفظ</button>
-    </form>
+        <input type="text" name="product" placeholder="اسم المنتج" required><br>
+        <input type="text" name="price" placeholder="السعر" required><br>
 
-    <div class="existing">
-        <h2>المنتجات الحالية</h2>
-        {% for category, products in data.items() %}
-            <div class="category">
-                <h3>{{ category }}</h3>
-                {% for product, price in products.items() %}
-                    <div class="product">{{ product }} : {{ price }}</div>
-                {% endfor %}
-            </div>
-        {% endfor %}
-    </div>
+        <label>اختر تصنيف موجود:</label><br>
+        <select name="category">
+            {% for category in data %}
+                <option value="{{ category }}">{{ category }}</option>
+            {% endfor %}
+        </select><br>
+
+        <label>أو أدخل تصنيف جديد:</label><br>
+        <input type="text" name="new_category" placeholder="تصنيف جديد (اختياري)"><br>
+
+        <button type="submit">إضافة</button>
+    </form>
 </body>
 </html>
