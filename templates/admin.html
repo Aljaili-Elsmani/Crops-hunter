@@ -2,24 +2,87 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>إضافة منتج</title>
+    <title>إضافة منتج جديد | Crops Hunter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #0077b6;
+        }
+        form label {
+            display: block;
+            margin: 12px 0 5px;
+        }
+        form input, form select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        form button {
+            margin-top: 20px;
+            width: 100%;
+            padding: 12px;
+            background-color: #0077b6;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        form button:hover {
+            background-color: #023e8a;
+        }
+        .back-link {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #555;
+        }
+    </style>
 </head>
 <body>
-    <h1>إضافة منتج جديد</h1>
-    <form method="POST">
-        <label>التصنيف:</label><br>
-        <input type="text" name="category" required><br><br>
+    <div class="container">
+        <h2>إضافة منتج جديد</h2>
+        <form method="POST">
+            <label for="name">اسم المنتج:</label>
+            <input type="text" id="name" name="name" required>
 
-        <label>اسم المنتج:</label><br>
-        <input type="text" name="name" required><br><br>
+            <label for="price">السعر (بالجنيه):</label>
+            <input type="text" id="price" name="price" required>
 
-        <label>السعر:</label><br>
-        <input type="text" name="price" required><br><br>
+            <label for="category">التصنيف:</label>
+            <select id="category" name="category" required>
+                <option value="">-- اختر تصنيفاً --</option>
+                <option value="حبوب">حبوب</option>
+                <option value="بقوليات">بقوليات</option>
+                <option value="خضروات">خضروات</option>
+                <option value="لحوم">لحوم</option>
+                <option value="محاصيل أخرى">محاصيل أخرى</option>
+            </select>
 
-        <button type="submit">إضافة</button>
-    </form>
+            <label for="seller">اسم البائع:</label>
+            <input type="text" id="seller" name="seller" required>
 
-    <br>
-    <a href="/">الرجوع للصفحة الرئيسية</a>
+            <button type="submit">حفظ المنتج</button>
+        </form>
+
+        <a class="back-link" href="/">↩ العودة للصفحة الرئيسية</a>
+    </div>
 </body>
 </html>
