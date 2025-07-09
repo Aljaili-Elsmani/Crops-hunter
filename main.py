@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# إعداد مجلد الصور (لن نستخدمه حاليًا لكن نحافظ عليه)
+# إعداد مجلد الصور (لن نستخدمه حاليًا لكن نحتفظ به)
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -30,7 +30,7 @@ def admin():
         category = request.form['category']
         name = request.form['name']
         price = request.form['price']
-        image_url = ''  # نتركها فاضية مؤقتًا
+        image_url = ''  # لا توجد صورة حالياً
 
         try:
             with open('data.json', 'r', encoding='utf-8') as f:
@@ -49,7 +49,7 @@ def admin():
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
-        return redirect(url_for('admin'))
+        return redirect(url_for('index'))  # هنا التعديل: يرجع للصفحة الرئيسية
 
     return render_template('admin.html')
 
