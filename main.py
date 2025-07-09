@@ -2,7 +2,9 @@ from flask import Flask, render_template, request, redirect, url_for
 import json
 
 app = Flask(__name__)
-
+@app.route('/admin')
+def admin():
+    return render_template('admin.html')
 DATA_FILE = 'data.json'
 
 def load_data():
