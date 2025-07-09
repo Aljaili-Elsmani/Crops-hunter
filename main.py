@@ -6,29 +6,32 @@ app = Flask(__name__)
 
 DATA_FILE = 'data.json'
 
-def load_data():
-    if os.path.exists(DATA_FILE):
-        with open(DATA_FILE, 'r', encoding='utf-8') as f:
-            return json.load(f)
-    return {}
+# Helper to load data
+def load_prices():
+    if not os.path.exists(DATA_FILE):
+        return {}
+    with open(DATA_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
 
-def save_data(data):
+# Helper to save data
+def save_prices(prices):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(data, f, ensure_ascii=False, indent=4)
+        json.dump(prices, f, ensure_ascii=False, indent=4)
 
 @app.route('/')
 def home():
-    prices = load_data()
+    prices = load_prices()
     return render_template('index.html', prices=prices)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    prices = load_data()
+    prices = load_prices()
     if request.method == 'POST':
-        for item in prices:
-            if item in request.form:
-                prices[item] = request.form[item]
-        save_data(prices)
+        item = request.form.get('item')
+        price = request.form.get('price')
+        if item and price:
+            prices[item] = price
+            save_prices(prices)
         return redirect('/admin')
     return render_template('admin.html', prices=prices)
 
