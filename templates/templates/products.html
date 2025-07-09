@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8" />
+    <title>عرض المنتجات - Crops Hunter</title>
+    <style>
+        body { font-family: Arial; background: #f0f0f0; padding: 30px; }
+        table { border-collapse: collapse; margin: 0 auto; width: 70%; background: #fff; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        th { background-color: #3498db; color: white; }
+        caption { font-size: 24px; margin-bottom: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <table>
+        <caption>قائمة المنتجات</caption>
+        <thead>
+            <tr>
+                <th>اسم المنتج</th>
+                <th>السعر</th>
+                <th>التصنيف</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for name, info in products.items() %}
+                <tr>
+                    <td>{{ name }}</td>
+                    <td>{{ info.price if info.price else info }}</td>
+                    <td>{{ info.category if info.category else '-' }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
