@@ -1,32 +1,45 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-    <meta charset="UTF-8">
-    <title>إدارة المنتجات</title>
+    <meta charset="UTF-8" />
+    <title>إدارة المنتجات - Crops Hunter</title>
     <style>
-        body { font-family: Arial; direction: rtl; background: #f0f0f0; text-align: center; padding: 40px; }
-        form { background: white; padding: 30px; display: inline-block; border-radius: 10px; box-shadow: 0 0 10px #ccc; }
-        input, select, button { margin: 10px 0; padding: 10px; width: 250px; border-radius: 5px; border: 1px solid #aaa; }
-        h1 { color: #2c3e50; }
+        body { font-family: Arial, sans-serif; padding: 30px; background: #f0f0f0; }
+        form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
+        label { display: block; margin-top: 10px; }
+        input, select { width: 100%; padding: 8px; margin-top: 5px; }
+        button { margin-top: 15px; padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
     </style>
 </head>
 <body>
     <h1>إضافة منتج جديد</h1>
     <form method="POST">
-        <input type="text" name="product" placeholder="اسم المنتج" required><br>
-        <input type="text" name="price" placeholder="السعر" required><br>
+        <label>اسم المنتج:
+            <input type="text" name="name" required />
+        </label>
 
-        <label>اختر تصنيف موجود:</label><br>
-        <select name="category">
-            {% for category in data %}
-                <option value="{{ category }}">{{ category }}</option>
-            {% endfor %}
-        </select><br>
+        <label>السعر:
+            <input type="text" name="price" required />
+        </label>
 
-        <label>أو أدخل تصنيف جديد:</label><br>
-        <input type="text" name="new_category" placeholder="تصنيف جديد (اختياري)"><br>
+        <label>وحدة القياس (مثل جرام، طن):
+            <input type="text" name="unit" required />
+        </label>
 
-        <button type="submit">إضافة</button>
+        <label>اختر تصنيف موجود:
+            <select name="category">
+                <option value="" selected>-- اختر تصنيف --</option>
+                {% for cat in categories %}
+                    <option value="{{ cat }}">{{ cat }}</option>
+                {% endfor %}
+            </select>
+        </label>
+
+        <label>أو أدخل تصنيف جديد:
+            <input type="text" name="new_category" />
+        </label>
+
+        <button type="submit">إضافة المنتج</button>
     </form>
 </body>
 </html>
