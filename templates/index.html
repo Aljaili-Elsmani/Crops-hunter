@@ -2,31 +2,90 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>المنتجات</title>
+  <title>المتجر - Crops Hunter</title>
   <style>
-    body { font-family: Arial; padding: 20px; direction: rtl; }
-    h2 { color: #2c3e50; }
-    .product { padding: 10px; border-bottom: 1px solid #ddd; }
-    .delete-link { color: red; margin-right: 10px; text-decoration: none; }
+    body {
+      font-family: Arial, sans-serif;
+      direction: rtl;
+      padding: 20px;
+      background-color: #f5f5f5;
+    }
+
+    h1, h2 {
+      color: #2c3e50;
+    }
+
+    .category {
+      margin-bottom: 40px;
+    }
+
+    .products {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+    }
+
+    .card {
+      background: white;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      width: 200px;
+      padding: 15px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .card h3 {
+      margin: 0 0 10px;
+      font-size: 18px;
+      color: #333;
+    }
+
+    .price {
+      color: #27ae60;
+      font-weight: bold;
+    }
+
+    .delete-link {
+      display: block;
+      margin-top: 10px;
+      color: red;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .admin-link {
+      display: block;
+      margin-bottom: 20px;
+      font-size: 18px;
+      text-decoration: none;
+      color: #2980b9;
+    }
+
   </style>
 </head>
 <body>
+
+  <a class="admin-link" href="/admin">➕ إضافة منتج</a>
   <h1>المنتجات المتاحة</h1>
 
   {% if products %}
     {% for category, items in products.items() %}
-      <h2>{{ category }}</h2>
-      {% for product, details in items.items() %}
-        <div class="product">
-          <strong>{{ product }}</strong> - {{ details.price }} SDG
-          <a class="delete-link" href="/delete/{{ category }}/{{ product | urlencode }}" onclick="return confirm('هل أنت متأكد من الحذف؟');">🗑 حذف</a>
+      <div class="category">
+        <h2>{{ category }}</h2>
+        <div class="products">
+          {% for product, details in items.items() %}
+            <div class="card">
+              <h3>{{ product }}</h3>
+              <p class="price">{{ details.price }} SDG</p>
+              <a class="delete-link" href="/delete/{{ category }}/{{ product | urlencode }}" onclick="return confirm('هل تريد حذف هذا المنتج؟');">🗑 حذف</a>
+            </div>
+          {% endfor %}
         </div>
-      {% endfor %}
+      </div>
     {% endfor %}
   {% else %}
     <p>لا توجد منتجات حالياً.</p>
   {% endif %}
 
-  <p><a href="/admin">➕ إضافة منتج</a></p>
 </body>
 </html>
