@@ -124,19 +124,19 @@
 </header>
 
 <div class="search-bar">
-    <input type="text" placeholder="ابحث عن منتج...">
+    <input type="text" placeholder="ابحث عن منتج... (غير مفعل بعد)">
 </div>
 
 <div class="products">
     {% for category, items in products.items() %}
-        {% for name, price in items.items() %}
+        {% for name, product in items.items() %}
         <div class="product-card">
-            <img src="https://via.placeholder.com/300x150?text={{ name }}" alt="{{ name }}">
+            <img src="{{ product.image if product.image else 'https://via.placeholder.com/300x150?text=No+Image' }}" alt="{{ name }}">
             <div class="product-details">
                 <h3>{{ name }}</h3>
-                <p>{{ price }} SDG</p>
+                <p>{{ product.price }} SDG</p>
             </div>
-            <a class="whatsapp-btn" href="https://wa.me/+249916399000?text=مرحبًا، أريد طلب {{ name }} بسعر {{ price }} SDG" target="_blank">
+            <a class="whatsapp-btn" href="https://wa.me/+249916399000?text=مرحبًا، أريد طلب {{ name }} بسعر {{ product.price }} SDG" target="_blank">
                 اطلب عبر واتساب
             </a>
         </div>
