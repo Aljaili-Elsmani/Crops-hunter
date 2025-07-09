@@ -1,0 +1,49 @@
+<!-- templates/base.html -->
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>Crops Hunter</title>
+    <style>
+        body { font-family: Arial; margin: 0; padding: 0; }
+        header {
+            background-color: #2d6a4f;
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+        nav {
+            background-color: #40916c;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 10px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .container {
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Crops Hunter</h1>
+    </header>
+    <nav>
+        <a href="/">الصفحة الرئيسية</a>
+        <a href="/admin">إدارة المنتجات</a>
+        <a href="/about">About Us</a>
+        <a href="/contact">للتواصل معنا</a>
+    </nav>
+    <div class="container">
+        {% block content %}{% endblock %}
+    </div>
+</body>
+</html>
