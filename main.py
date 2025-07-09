@@ -1,44 +1,45 @@
-from flask import Flask, render_template, request, redirect, url_for
-from flask_sqlalchemy import SQLAlchemy
-import os
+from flask import Flask, render_template, request, redirect
+from models import db, Product
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
-
-class Product(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    category = db.Column(db.String(100))
-    name = db.Column(db.String(100))
-    price = db.Column(db.String(100))
+db.init_app(app)
 
 @app.route('/')
 def index():
     products = Product.query.all()
-    return render_template('index.html', products=products)
+
+    # ترتيب المنتجات حسب الفئة
+    products_by_category = {}
+    for product in products:
+        category = product.category or 'أخرى'
+        if category not in products_by_category:
+            products_by_category[category] = []
+        products_by_category[category].append(product)
+
+    return render_template('index.html', products_by_category=products_by_category)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
-        category = request.form['category']
         name = request.form['name']
         price = request.form['price']
-
-        new_product = Product(category=category, name=name, price=price)
+        category = request.form['category']
+        unit = request.form['unit']
+        new_product = Product(name=name, price=price, category=category, unit=unit)
         db.session.add(new_product)
         db.session.commit()
-        return redirect(url_for('admin'))
-
+        return redirect('/admin')
+    
     products = Product.query.all()
     return render_template('admin.html', products=products)
 
-@app.route('/delete/<int:id>')
-def delete(id):
-    product = Product.query.get_or_404(id)
+@app.route('/delete/<int:product_id>')
+def delete_product(product_id):
+    product = Product.query.get_or_404(product_id)
     db.session.delete(product)
     db.session.commit()
-    return redirect(url_for('admin'))
+    return redirect('/admin')
 
 @app.route('/about')
 def about():
@@ -49,9 +50,4 @@ def contact():
     return render_template('contact.html')
 
 if __name__ == '__main__':
-    # إنشاء الجداول عند تشغيل السيرفر
-    with app.app_context():
-        db.create_all()
-
-    port = int(os.environ.get('PORT', 5000))
-    app.run(debug=False, host='0.0.0.0', port=port)
+    app.run(debug=True)
