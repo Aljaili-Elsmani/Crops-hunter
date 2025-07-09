@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for
 import json
+import os  # ✅ هذا السطر هو المطلوب
 
 app = Flask(__name__)
 
@@ -21,7 +22,7 @@ def admin():
         category = request.form['category']
         name = request.form['name']
         price = request.form['price']
-        image_url = ''  # نترك الصورة فارغة مؤقتًا
+        image_url = ''  # لا توجد صورة حالياً
 
         try:
             with open('data.json', 'r', encoding='utf-8') as f:
@@ -40,7 +41,7 @@ def admin():
         with open('data.json', 'w', encoding='utf-8') as f:
             json.dump(data, f, ensure_ascii=False, indent=4)
 
-        return redirect(url_for('index'))  # بعد الحفظ نرجع للصفحة الرئيسية
+        return redirect(url_for('index'))  # يرجع للصفحة الرئيسية
 
     return render_template('admin.html')
 
