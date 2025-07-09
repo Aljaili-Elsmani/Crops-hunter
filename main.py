@@ -6,66 +6,66 @@ app = Flask(__name__)
 
 DATA_FILE = 'data.json'
 
+def load_products():
+    if not os.path.exists(DATA_FILE):
+        return []
+    with open(DATA_FILE, 'r', encoding='utf-8') as f:
+        return json.load(f)
+
+def save_products(products):
+    with open(DATA_FILE, 'w', encoding='utf-8') as f:
+        json.dump(products, f, ensure_ascii=False, indent=2)
+
 @app.route('/')
 def home():
-    try:
-        with open(DATA_FILE, 'r') as f:
-            products = json.load(f)
-    except FileNotFoundError:
-        products = []
-
-    return render_template('index.html', products=products)
+    products = load_products()
+    # تجميع المنتجات حسب التصنيف
+    categories = {}
+    for p in products:
+        cat = p.get('category', 'غير مصنف')
+        categories.setdefault(cat, []).append(p)
+    return render_template('index.html', categories=categories)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
         name = request.form['name']
         price = request.form['price']
+        unit = request.form['unit']  # وحدة القياس مثلا: جرام، طن
         category = request.form.get('category')
         new_category = request.form.get('new_category')
 
-        # تحديد التصنيف النهائي
-        final_category = new_category if new_category else category
+        final_category = new_category.strip() if new_category else category
 
         product = {
             'name': name,
             'price': price,
+            'unit': unit,
             'category': final_category
         }
 
-        try:
-            with open(DATA_FILE, 'r') as f:
-                products = json.load(f)
-        except FileNotFoundError:
-            products = []
-
+        products = load_products()
         products.append(product)
-
-        with open(DATA_FILE, 'w') as f:
-            json.dump(products, f, ensure_ascii=False, indent=2)
+        save_products(products)
 
         return redirect(url_for('admin'))
 
-    try:
-        with open(DATA_FILE, 'r') as f:
-            products = json.load(f)
-    except FileNotFoundError:
-        products = []
-
-    # استخراج التصنيفات
-    categories = list(set([p['category'] for p in products if 'category' in p]))
-
+    products = load_products()
+    categories = list({p.get('category', 'غير مصنف') for p in products})
     return render_template('admin.html', categories=categories)
 
 @app.route('/products')
-def view_products():
-    try:
-        with open(DATA_FILE, 'r') as f:
-            products = json.load(f)
-    except FileNotFoundError:
-        products = []
+def products():
+    products = load_products()
+    categories = {}
+    for p in products:
+        cat = p.get('category', 'غير مصنف')
+        categories.setdefault(cat, []).append(p)
+    return render_template('products.html', categories=categories)
 
-    return render_template('products.html', products=products)
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
