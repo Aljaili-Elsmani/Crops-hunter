@@ -1,39 +1,39 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 import json
-import os
 
 app = Flask(__name__)
 
 DATA_FILE = 'data.json'
 
-# Helper to load data
-def load_prices():
-    if not os.path.exists(DATA_FILE):
-        return {}
+def load_data():
     with open(DATA_FILE, 'r', encoding='utf-8') as f:
         return json.load(f)
 
-# Helper to save data
-def save_prices(prices):
+def save_data(data):
     with open(DATA_FILE, 'w', encoding='utf-8') as f:
-        json.dump(prices, f, ensure_ascii=False, indent=4)
+        json.dump(data, f, ensure_ascii=False, indent=2)
 
 @app.route('/')
 def home():
-    prices = load_prices()
+    prices = load_data()
     return render_template('index.html', prices=prices)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
-    prices = load_prices()
+    data = load_data()
     if request.method == 'POST':
-        item = request.form.get('item')
+        category = request.form.get('category')
+        product = request.form.get('product')
         price = request.form.get('price')
-        if item and price:
-            prices[item] = price
-            save_prices(prices)
-        return redirect('/admin')
-    return render_template('admin.html', prices=prices)
+
+        if category and product and price:
+            if category not in data:
+                data[category] = {}
+            data[category][product] = price
+            save_data(data)
+            return redirect(url_for('admin'))
+
+    return render_template('admin.html', data=data)
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=10000)
