@@ -5,7 +5,7 @@ from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
-# إنشاء مجلد لحفظ الصور
+# إعداد مجلد الصور (لن نستخدمه حاليًا لكن نحافظ عليه)
 UPLOAD_FOLDER = 'static/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -23,22 +23,14 @@ def index():
         products = {}
     return render_template('index.html', products=products)
 
-# صفحة الإدارة (إضافة منتج)
+# صفحة الإدارة لإضافة منتج
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
         category = request.form['category']
         name = request.form['name']
         price = request.form['price']
-        image_file = request.files['image']
-
-        if image_file:
-            filename = secure_filename(image_file.filename)
-            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            image_file.save(image_path)
-            image_url = '/' + image_path  # لتحميل الصورة في الموقع
-        else:
-            image_url = ''  # لا توجد صورة
+        image_url = ''  # نتركها فاضية مؤقتًا
 
         try:
             with open('data.json', 'r', encoding='utf-8') as f:
@@ -61,6 +53,7 @@ def admin():
 
     return render_template('admin.html')
 
+# تشغيل التطبيق
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
