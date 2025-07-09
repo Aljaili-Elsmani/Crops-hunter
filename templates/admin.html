@@ -1,45 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <title>إدارة المنتجات - Crops Hunter</title>
-    <style>
-        body { font-family: Arial, sans-serif; padding: 30px; background: #f0f0f0; }
-        form { background: white; padding: 20px; border-radius: 8px; max-width: 400px; margin: auto; }
-        label { display: block; margin-top: 10px; }
-        input, select { width: 100%; padding: 8px; margin-top: 5px; }
-        button { margin-top: 15px; padding: 10px; background: #3498db; color: white; border: none; border-radius: 5px; cursor: pointer; }
-    </style>
+    <meta charset="UTF-8">
+    <title>إدارة المنتجات</title>
 </head>
 <body>
-    <h1>إضافة منتج جديد</h1>
-    <form method="POST">
-        <label>اسم المنتج:
-            <input type="text" name="name" required />
-        </label>
+    <h2>إضافة منتج جديد</h2>
+    <form method="POST" enctype="multipart/form-data">
+        <label>التصنيف:</label><br>
+        <input type="text" name="category" required><br><br>
 
-        <label>السعر:
-            <input type="text" name="price" required />
-        </label>
+        <label>اسم المنتج:</label><br>
+        <input type="text" name="name" required><br><br>
 
-        <label>وحدة القياس (مثل جرام، طن):
-            <input type="text" name="unit" required />
-        </label>
+        <label>السعر:</label><br>
+        <input type="text" name="price" required><br><br>
 
-        <label>اختر تصنيف موجود:
-            <select name="category">
-                <option value="" selected>-- اختر تصنيف --</option>
-                {% for cat in categories %}
-                    <option value="{{ cat }}">{{ cat }}</option>
-                {% endfor %}
-            </select>
-        </label>
+        <label>صورة المنتج:</label><br>
+        <input type="file" name="image" accept="image/*"><br><br>
 
-        <label>أو أدخل تصنيف جديد:
-            <input type="text" name="new_category" />
-        </label>
-
-        <button type="submit">إضافة المنتج</button>
+        <button type="submit">حفظ المنتج</button>
     </form>
 </body>
 </html>
