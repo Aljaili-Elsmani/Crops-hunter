@@ -2,20 +2,78 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>المنتجات المتاحة</title>
+    <title>المنتجات المتاحة | Crops Hunter</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            direction: rtl;
+        }
+        header {
+            background-color: #0077b6;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+        .container {
+            padding: 20px;
+        }
+        .product {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+        }
+        .product h3 {
+            margin: 0;
+            color: #023e8a;
+        }
+        .product p {
+            margin: 5px 0;
+        }
+        .delete-button {
+            background-color: #d62828;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 14px;
+        }
+        .admin-link {
+            display: inline-block;
+            margin: 20px;
+            text-decoration: none;
+            background-color: #2a9d8f;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+        }
+    </style>
 </head>
 <body>
-    <h1>المنتجات المتاحة</h1>
-    <ul>
-        {% for product in products %}
-            <li>
-                <strong>{{ product.name }}</strong> - {{ product.price }} SDG - ({{ product.category }})
-                <a href="{{ url_for('delete', product_id=product.id) }}">[حذف]</a>
-            </li>
-        {% endfor %}
-    </ul>
+    <header>
+        <h1>المنتجات المتاحة</h1>
+        <a class="admin-link" href="/admin">+ أضف منتج جديد</a>
+    </header>
 
-    <br>
-    <a href="/admin">إضافة منتج جديد</a>
+    <div class="container">
+        {% if products %}
+            {% for product in products %}
+                <div class="product">
+                    <h3>{{ product.name }}</h3>
+                    <p>السعر: {{ product.price }} SDG</p>
+                    <p>التصنيف: {{ product.category }}</p>
+                    <p>البائع: {{ product.seller }}</p>
+                    <a class="delete-button" href="/delete/{{ product.id }}" onclick="return confirm('هل أنت متأكد من الحذف؟')">حذف</a>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>لا توجد منتجات حالياً.</p>
+        {% endif %}
+    </div>
 </body>
 </html>
