@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>إدارة المنتجات</title>
+    <title>إضافة منتج</title>
 </head>
 <body>
-    <h2>إضافة منتج جديد</h2>
-    <form method="POST" enctype="multipart/form-data">
+    <h1>إضافة منتج جديد</h1>
+    <form method="POST">
         <label>التصنيف:</label><br>
         <input type="text" name="category" required><br><br>
 
@@ -16,10 +16,10 @@
         <label>السعر:</label><br>
         <input type="text" name="price" required><br><br>
 
-        <label>صورة المنتج:</label><br>
-        <input type="file" name="image" accept="image/*"><br><br>
-
-        <button type="submit">حفظ المنتج</button>
+        <button type="submit">إضافة</button>
     </form>
+
+    <br>
+    <a href="/">الرجوع للصفحة الرئيسية</a>
 </body>
 </html>
