@@ -10,12 +10,7 @@ db.init_app(app)
 # الصفحة الرئيسية
 @app.route('/')
 def index():
-    search_query = request.args.get('search', '').strip()
-    if search_query:
-        products = Product.query.filter(Product.name.ilike(f'%{search_query}%')).all()
-    else:
-        products = Product.query.all()
-    
+    products = Product.query.all()
     products_by_category = {}
     for product in products:
         category = product.category or 'أخرى'
@@ -47,6 +42,21 @@ def delete(id):
         db.session.delete(product)
         db.session.commit()
     return redirect('/admin')
+
+# تعديل منتج
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit(id):
+    product = Product.query.get_or_404(id)
+
+    if request.method == 'POST':
+        product.name = request.form['name']
+        product.category = request.form['category']
+        product.price = request.form['price']
+        product.unit = request.form['unit']
+        db.session.commit()
+        return redirect('/admin')
+
+    return render_template('edit.html', product=product)
 
 # صفحة About
 @app.route('/about')
