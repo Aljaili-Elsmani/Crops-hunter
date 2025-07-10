@@ -62,7 +62,17 @@
 </head>
 <body>
     <h1>إدارة المنتجات</h1>
-    
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div style="padding: 10px; background-color: {% if category == 'success' %}#d4edda{% elif category == 'error' %}#f8d7da{% else %}#cce5ff{% endif %}; margin-bottom: 10px; border-radius: 5px; width: 80%; margin: 10px auto;">
+            {{ message }}
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
     <form method="POST">
         <input type="text" name="name" placeholder="اسم المنتج" required />
         <input type="text" name="category" placeholder="الفئة (حبوب، بقوليات، لحوم...)" required />
