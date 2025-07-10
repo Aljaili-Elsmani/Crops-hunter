@@ -1,35 +1,25 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <title>عرض المنتجات - Crops Hunter</title>
-    <style>
-        body { font-family: Arial; background: #f0f0f0; padding: 30px; direction: rtl; }
-        table { border-collapse: collapse; margin: 0 auto; width: 80%; background: #fff; }
-        th, td { border: 1px solid #ccc; padding: 10px; text-align: center; }
-        th { background-color: #3498db; color: white; }
-        caption { font-size: 24px; margin-bottom: 15px; font-weight: bold; }
-    </style>
+    <title>تفاصيل المنتج - {{ product.name }}</title>
 </head>
 <body>
-    <table>
-        <caption>قائمة المنتجات</caption>
-        <thead>
-            <tr>
-                <th>اسم المنتج</th>
-                <th>السعر</th>
-                <th>التصنيف</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for product in products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
-                    <td>{{ product.category }}</td>
-                </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <h2>تفاصيل المنتج</h2>
+    <ul>
+        <li><strong>الاسم:</strong> {{ product.name }}</li>
+        <li><strong>الفئة:</strong> {{ product.category }}</li>
+        <li><strong>السعر:</strong> {{ product.price }} جنيه / {{ product.unit }}</li>
+        <li><strong>مكان الإنتاج:</strong> {{ product.origin or 'غير محدد' }}</li>
+        <li><strong>الكمية المتوفرة:</strong> {{ product.quantity or 'غير محددة' }}</li>
+        <li><strong>ملاحظات:</strong> {{ product.notes or 'لا توجد ملاحظات' }}</li>
+    </ul>
+
+    <a href="https://wa.me/249916399000?text=مرحباً، أريد الطلب على {{ product.name }}" target="_blank">
+        اطلب عبر واتساب
+    </a>
+
+    <br><br>
+    <a href="{{ url_for('index') }}">عودة للصفحة الرئيسية</a>
 </body>
 </html>
