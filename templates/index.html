@@ -51,9 +51,19 @@
         th {
             background-color: #e9f5ff;
         }
-        .btn-delete {
-            color: red;
-            cursor: pointer;
+        .btn-whatsapp {
+            background-color: #25D366;
+            color: white;
+            padding: 8px 12px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: bold;
+            display: inline-block;
+            margin: 3px 0;
+        }
+        .btn-whatsapp:hover {
+            background-color: #1ebc59;
         }
     </style>
 </head>
@@ -83,7 +93,7 @@
                     <th>الكمية</th>
                     <th>الأصل</th>
                     <th>ملاحظات</th>
-                    <th>حذف</th>
+                    <th>اطلب</th>
                 </tr>
             </thead>
             <tbody>
@@ -96,9 +106,16 @@
                     <td>{{ product.origin or '-' }}</td>
                     <td>{{ product.notes or '-' }}</td>
                     <td>
-                        <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
-                            <button class="btn-delete" type="submit">🗑️</button>
-                        </form>
+                        <a class="btn-whatsapp"
+                           href="https://wa.me/249916399000?text=مرحبًا،%20أرغب%20في%20طلب%20{{ product.name }}%20كمية%20{{ product.quantity or '---' }}%20{{ product.unit }}.%0A%0A🔹%20الاسم%20:%20%0A🔹%20الكمية%20:%20%0A🔹%20مكان%20الاستلام%20:%20%0A"
+                           target="_blank" title="اطلب عبر الواتساب الرقم السوداني">
+                            🇸🇩 اطلب عبر واتساب
+                        </a><br>
+                        <a class="btn-whatsapp"
+                           href="https://wa.me/971562967621?text=مرحبًا،%20أرغب%20في%20طلب%20{{ product.name }}%20كمية%20{{ product.quantity or '---' }}%20{{ product.unit }}.%0A%0A🔹%20الاسم%20:%20%0A🔹%20الكمية%20:%20%0A🔹%20مكان%20الاستلام%20:%20%0A"
+                           target="_blank" title="اطلب عبر الواتساب الرقم الإماراتي">
+                            🇦🇪 اطلب عبر واتساب
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
