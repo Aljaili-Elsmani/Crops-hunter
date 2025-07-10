@@ -7,16 +7,25 @@
         body {
             font-family: Arial, sans-serif;
             direction: rtl;
-            padding: 20px;
+            padding: 40px;
             background-color: #f0f8ff;
             color: #333;
         }
         h1 {
             color: #005f99;
+            font-size: 32px;
+        }
+        p {
+            font-size: 18px;
+            margin-top: 20px;
+            line-height: 1.7;
         }
         a {
+            display: inline-block;
+            margin-top: 30px;
             color: #007acc;
             text-decoration: none;
+            font-weight: bold;
         }
         a:hover {
             text-decoration: underline;
@@ -25,7 +34,12 @@
 </head>
 <body>
     <h1>من نحن</h1>
-    <p>نحن نوفر لكم أفضل أسعار المنتجات السودانية بمصداقية عالية.</p>
-    <a href="{{ url_for('index') }}">العودة إلى الصفحة الرئيسية</a>
+    <p>
+        Crops Hunter هي منصة مخصصة لعرض أسعار المنتجات السودانية الزراعية واللحوم وغيرها، بهدف ربط البائعين بالمشترين بكل مصداقية وشفافية.
+    </p>
+    <p>
+        نحن نسعى لأن نكون مصدرًا موثوقًا لأسعار السوق السوداني ونوفر واجهة بسيطة وسهلة الاستخدام تتيح لك معرفة الأسعار وتتبع السوق من مكانك.
+    </p>
+    <a href="{{ url_for('index') }}">العودة للصفحة الرئيسية</a>
 </body>
 </html>
