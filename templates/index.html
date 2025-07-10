@@ -1,67 +1,20 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <title>Crops Hunter</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            direction: rtl;
-            background-color: #f8f9fa;
-        }
-        .product-card {
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            background-color: white;
-            margin-bottom: 20px;
-        }
-        .whatsapp-btn {
-            background-color: #25D366;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-    </style>
+    <meta charset="UTF-8" />
+    <title>الصفحة الرئيسية - Crops Hunter</title>
 </head>
 <body>
-
-<div class="container mt-5">
-    <h1 class="text-center mb-4 text-primary">Crops Hunter</h1>
-
-    <div class="text-center mb-4">
-        <a href="/" class="btn btn-outline-primary mx-2">الصفحة الرئيسية</a>
-        <a href="/admin" class="btn btn-outline-secondary mx-2">إدارة المنتجات</a>
-        <a href="/contact" class="btn btn-outline-success mx-2">للتواصل معنا</a>
-        <a href="/about" class="btn btn-outline-info mx-2">About Us</a>
-    </div>
-
-    <!-- مربع البحث -->
-    <form method="GET" action="/" class="mb-4">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="ابحث عن منتج..." value="{{ request.args.get('search', '') }}">
-            <button class="btn btn-primary" type="submit">بحث</button>
-        </div>
-    </form>
-
-    {% for category, items in products_by_category.items() %}
-    <h3 class="mt-4">{{ category }}</h3>
-    <div class="row">
-        {% for product in items %}
-        <div class="col-md-4">
-            <div class="product-card">
-                <h5>{{ product.name }}</h5>
-                <p>السعر: {{ product.price }} SDG</p>
-                <p>الوحدة: {{ product.unit }}</p>
-                <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أود طلب {{ product.name }}">اطلب عبر واتساب</a>
-            </div>
-        </div>
+    <h1>المنتجات</h1>
+    <ul>
+        {% for product in products %}
+            <li>
+                <a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a> 
+                - {{ product.category }} - السعر: {{ product.price }} جنيه / {{ product.unit }}
+            </li>
+        {% else %}
+            <li>لا توجد منتجات</li>
         {% endfor %}
-    </div>
-    {% endfor %}
-</div>
-
+    </ul>
 </body>
 </html>
