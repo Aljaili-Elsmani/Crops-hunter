@@ -25,7 +25,13 @@ class Product(db.Model):
 @app.route('/')
 def index():
     products = Product.query.all()
-    return render_template('index.html', products=products)
+    products_by_category = {}
+    for product in products:
+        if product.category not in products_by_category:
+            products_by_category[product.category] = []
+        products_by_category[product.category].append(product)
+
+    return render_template('index.html', products_by_category=products_by_category)
 
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
