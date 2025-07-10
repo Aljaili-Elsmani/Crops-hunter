@@ -38,6 +38,14 @@
         <a href="/about" class="btn btn-outline-info mx-2">About Us</a>
     </div>
 
+    <!-- مربع البحث -->
+    <form method="GET" action="/" class="mb-4">
+        <div class="input-group">
+            <input type="text" name="search" class="form-control" placeholder="ابحث عن منتج..." value="{{ request.args.get('search', '') }}">
+            <button class="btn btn-primary" type="submit">بحث</button>
+        </div>
+    </form>
+
     {% for category, items in products_by_category.items() %}
     <h3 class="mt-4">{{ category }}</h3>
     <div class="row">
