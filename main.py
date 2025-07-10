@@ -10,7 +10,12 @@ db.init_app(app)
 # الصفحة الرئيسية
 @app.route('/')
 def index():
-    products = Product.query.all()
+    search_query = request.args.get('search', '').strip()
+    if search_query:
+        products = Product.query.filter(Product.name.ilike(f'%{search_query}%')).all()
+    else:
+        products = Product.query.all()
+    
     products_by_category = {}
     for product in products:
         category = product.category or 'أخرى'
