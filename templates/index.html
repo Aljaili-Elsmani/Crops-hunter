@@ -2,19 +2,71 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8" />
-    <title>الصفحة الرئيسية - Crops Hunter</title>
+    <title>Crops Hunter - الصفحة الرئيسية</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f8f9fa;
+        }
+        h1 {
+            color: #007bff;
+        }
+        .navbar {
+            margin-bottom: 20px;
+        }
+        .navbar a {
+            margin: 5px;
+            padding: 8px 12px;
+            text-decoration: none;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .product-card {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 10px;
+            margin: 10px auto;
+            width: 250px;
+            background-color: white;
+        }
+        .category-title {
+            font-weight: bold;
+            margin-top: 30px;
+            font-size: 20px;
+        }
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 5px;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
 <body>
-    <h1>المنتجات</h1>
-    <ul>
-        {% for product in products %}
-            <li>
-                <a href="{{ url_for('product_detail', product_id=product.id) }}">{{ product.name }}</a> 
-                - {{ product.category }} - السعر: {{ product.price }} جنيه / {{ product.unit }}
-            </li>
-        {% else %}
-            <li>لا توجد منتجات</li>
+    <h1>Crops Hunter</h1>
+
+    <div class="navbar">
+        <a href="{{ url_for('index') }}">الصفحة الرئيسية</a>
+        <a href="{{ url_for('admin') }}">إدارة المنتجات</a>
+        <a href="/contact">للتواصل معنا</a>
+        <a href="/about">About Us</a>
+    </div>
+
+    {% for category, items in products_by_category.items() %}
+        <div class="category-title">{{ category }}</div>
+        {% for product in items %}
+            <div class="product-card">
+                <strong>{{ product.name }}</strong><br>
+                السعر: SDG {{ "{:,.0f}".format(product.price) }}<br>
+                الوحدة: {{ product.unit }}<br>
+                <a class="whatsapp-btn" href="https://wa.me/249916399000?text=أرغب في شراء {{ product.name }}" target="_blank">اطلب عبر واتساب</a>
+            </div>
         {% endfor %}
-    </ul>
+    {% endfor %}
 </body>
 </html>
