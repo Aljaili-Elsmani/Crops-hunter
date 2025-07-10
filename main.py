@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
 from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import os
 
 app = Flask(__name__)
@@ -7,11 +8,11 @@ app = Flask(__name__)
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.secret_key = 'your_secret_key_here'  # لتفعيل الرسائل
+app.secret_key = 'your_secret_key_here'
 
 db = SQLAlchemy(app)
 
-# نموذج المنتج
+# تعريف جدول المنتجات
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -24,6 +25,11 @@ class Product(db.Model):
 
     def __repr__(self):
         return f'<Product {self.name}>'
+
+# Inject السنة الحالية لكل القوالب
+@app.context_processor
+def inject_current_year():
+    return {'current_year': datetime.now().year}
 
 # الصفحة الرئيسية
 @app.route('/')
@@ -46,7 +52,7 @@ def contact():
 def about():
     return render_template('about.html')
 
-# صفحة إدارة المنتجات
+# لوحة الإدارة (إضافة منتجات)
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
@@ -65,8 +71,13 @@ def admin():
             notes = request.form.get('notes')
 
             new_product = Product(
-                name=name, category=category, price=price, unit=unit,
-                origin=origin, quantity=quantity, notes=notes
+                name=name,
+                category=category,
+                price=price,
+                unit=unit,
+                origin=origin,
+                quantity=quantity,
+                notes=notes
             )
             db.session.add(new_product)
             db.session.commit()
@@ -87,11 +98,11 @@ def delete_product(product_id):
     db.session.delete(product)
     db.session.commit()
     flash('🗑️ تم حذف المنتج بنجاح', 'success')
-    return redirect(url_for('admin'))
+    return redirect(url_for('index'))
 
+# تشغيل التطبيق
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port, debug=True)
