@@ -1,48 +1,102 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8" />
-    <title>صفحة الإدارة - إضافة منتجات</title>
+    <meta charset="UTF-8">
+    <title>إدارة المنتجات - Crops Hunter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f2f5;
+        }
+        h1 {
+            color: #007bff;
+        }
+        form {
+            margin: 20px auto;
+            width: 300px;
+        }
+        input, textarea {
+            width: 100%;
+            margin: 5px 0;
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 8px 16px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        table {
+            margin: 20px auto;
+            border-collapse: collapse;
+            width: 90%;
+        }
+        th, td {
+            border: 1px solid #ccc;
+            padding: 10px;
+        }
+        .delete-btn {
+            background-color: red;
+            color: white;
+            padding: 4px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 8px 12px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+        }
+    </style>
 </head>
 <body>
-    <h1>إضافة منتج جديد</h1>
-    <form method="POST" action="{{ url_for('admin') }}">
-        <label>الاسم:</label><br>
-        <input type="text" name="name" required><br>
-
-        <label>الفئة:</label><br>
-        <input type="text" name="category" required><br>
-
-        <label>السعر:</label><br>
-        <input type="number" step="0.01" name="price" required><br>
-
-        <label>وحدة القياس:</label><br>
-        <input type="text" name="unit" required><br>
-
-        <label>مكان الإنتاج:</label><br>
-        <input type="text" name="origin"><br>
-
-        <label>الكمية المتوفرة:</label><br>
-        <input type="text" name="quantity"><br>
-
-        <label>ملاحظات إضافية:</label><br>
-        <textarea name="notes"></textarea><br><br>
-
+    <h1>إدارة المنتجات</h1>
+    
+    <form method="POST">
+        <input type="text" name="name" placeholder="اسم المنتج" required />
+        <input type="text" name="category" placeholder="الفئة (حبوب، بقوليات، لحوم...)" required />
+        <input type="number" name="price" step="0.01" placeholder="السعر" required />
+        <input type="text" name="unit" placeholder="الوحدة (كيلو، طن...)" required />
+        <input type="text" name="origin" placeholder="بلد المنشأ (اختياري)" />
+        <input type="text" name="quantity" placeholder="الكمية المتوفرة (اختياري)" />
+        <textarea name="notes" placeholder="ملاحظات إضافية (اختياري)"></textarea>
         <button type="submit">إضافة المنتج</button>
     </form>
 
-    <hr>
-
-    <h2>المنتجات الموجودة</h2>
-    <ul>
+    <table>
+        <tr>
+            <th>الاسم</th>
+            <th>الفئة</th>
+            <th>السعر</th>
+            <th>الوحدة</th>
+            <th>حذف</th>
+        </tr>
         {% for product in products %}
-            <li>{{ product.name }} - {{ product.category }} - {{ product.price }} جنيه / {{ product.unit }}</li>
-        {% else %}
-            <li>لا توجد منتجات</li>
+        <tr>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ "{:,.0f}".format(product.price) }}</td>
+            <td>{{ product.unit }}</td>
+            <td>
+                <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}">
+                    <button class="delete-btn" type="submit">حذف</button>
+                </form>
+            </td>
+        </tr>
         {% endfor %}
-    </ul>
+    </table>
 
-    <br><br>
-    <a href="{{ url_for('index') }}">العودة للصفحة الرئيسية</a>
+    <a class="back-btn" href="{{ url_for('index') }}">العودة للصفحة الرئيسية</a>
 </body>
 </html>
