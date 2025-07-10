@@ -1,44 +1,50 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for, abort
 from flask_sqlalchemy import SQLAlchemy
-from models import db, Product
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db.init_app(app)
 
-@app.before_first_request
-def create_tables():
+db = SQLAlchemy(app)
+
+# موديل المنتج
+class Product(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(100), nullable=False)
+    category = db.Column(db.String(50), nullable=False)
+    price = db.Column(db.Float, nullable=False)
+    unit = db.Column(db.String(20), nullable=False)
+    origin = db.Column(db.String(100))
+    quantity = db.Column(db.String(50))
+    notes = db.Column(db.Text)
+
+    def __repr__(self):
+        return f'<Product {self.name}>'
+
+# إنشاء الجداول (قاعدة البيانات) عند تشغيل التطبيق
+with app.app_context():
     db.create_all()
 
+# الصفحة الرئيسية - عرض المنتجات
 @app.route('/')
 def index():
-    search = request.args.get('search')
-    if search:
-        products = Product.query.filter(Product.name.contains(search)).all()
-    else:
-        products = Product.query.all()
+    products = Product.query.all()
+    return render_template('index.html', products=products)
 
-    # ترتيب المنتجات حسب الفئة
-    products_by_category = {}
-    for product in products:
-        if product.category not in products_by_category:
-            products_by_category[product.category] = []
-        products_by_category[product.category].append(product)
-
-    return render_template('index.html', products_by_category=products_by_category)
-
+# صفحة الإدارة - إضافة وعرض المنتجات
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
     if request.method == 'POST':
+        # قراءة بيانات المنتج من الفورم
         name = request.form['name']
         category = request.form['category']
-        price = request.form['price']
+        price = float(request.form['price'])
         unit = request.form['unit']
-        origin = request.form['origin']
-        quantity = request.form['quantity']
-        notes = request.form['notes']
+        origin = request.form.get('origin', '')
+        quantity = request.form.get('quantity', '')
+        notes = request.form.get('notes', '')
 
+        # إنشاء وإضافة المنتج لقاعدة البيانات
         new_product = Product(
             name=name,
             category=category,
@@ -50,25 +56,18 @@ def admin():
         )
         db.session.add(new_product)
         db.session.commit()
-        return redirect('/admin')
 
+        return redirect(url_for('admin'))
+
+    # عرض كل المنتجات في صفحة الإدارة
     products = Product.query.all()
     return render_template('admin.html', products=products)
 
-@app.route('/delete/<int:id>')
-def delete_product(id):
-    product = Product.query.get_or_404(id)
-    db.session.delete(product)
-    db.session.commit()
-    return redirect('/admin')
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
+# صفحة تفاصيل المنتج
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product.html', product=product)
 
 if __name__ == '__main__':
     app.run(debug=True)
