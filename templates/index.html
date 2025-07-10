@@ -1,72 +1,116 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8">
     <title>Crops Hunter - الصفحة الرئيسية</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            background-color: #f8f9fa;
+            font-family: 'Segoe UI', sans-serif;
+            direction: rtl;
+            margin: 0;
+            padding: 0;
+            background-color: #f7f9fc;
+            color: #333;
         }
-        h1 {
-            color: #007bff;
-        }
-        .navbar {
-            margin-bottom: 20px;
-        }
-        .navbar a {
-            margin: 5px;
-            padding: 8px 12px;
-            text-decoration: none;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        .product-card {
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 10px;
-            margin: 10px auto;
-            width: 250px;
-            background-color: white;
-        }
-        .category-title {
-            font-weight: bold;
-            margin-top: 30px;
-            font-size: 20px;
-        }
-        .whatsapp-btn {
-            background-color: #25D366;
+        header, footer {
+            background-color: #005f99;
             color: white;
-            padding: 5px 10px;
-            border: none;
-            border-radius: 5px;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        nav {
+            background-color: #007acc;
+            padding: 10px 0;
+            text-align: center;
+        }
+        nav a {
+            color: white;
+            margin: 0 15px;
             text-decoration: none;
-            display: inline-block;
-            margin-top: 10px;
+            font-weight: bold;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+        .category-section {
+            margin: 30px auto;
+            width: 90%;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 0 10px #ccc;
+            margin-bottom: 40px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+        th {
+            background-color: #e9f5ff;
+        }
+        .btn-delete {
+            color: red;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
+
+<header>
     <h1>Crops Hunter</h1>
+</header>
 
-    <div class="navbar">
-        <a href="{{ url_for('index') }}">الصفحة الرئيسية</a>
-        <a href="{{ url_for('admin') }}">إدارة المنتجات</a>
-        <a href="/contact">للتواصل معنا</a>
-        <a href="/about">About Us</a>
+<nav>
+    <a href="{{ url_for('index') }}">الرئيسية</a>
+    <a href="{{ url_for('contact') }}">تواصل معنا</a>
+    <a href="{{ url_for('about') }}">من نحن</a>
+    <a href="{{ url_for('admin') }}">لوحة التحكم</a>
+</nav>
+
+<main>
+    {% for category, products in products_by_category.items() %}
+    <div class="category-section">
+        <h2>الفئة: {{ category }}</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم المنتج</th>
+                    <th>السعر</th>
+                    <th>الوحدة</th>
+                    <th>الكمية</th>
+                    <th>الأصل</th>
+                    <th>ملاحظات</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.unit }}</td>
+                    <td>{{ product.quantity or '-' }}</td>
+                    <td>{{ product.origin or '-' }}</td>
+                    <td>{{ product.notes or '-' }}</td>
+                    <td>
+                        <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('هل أنت متأكد من الحذف؟');">
+                            <button class="btn-delete" type="submit">🗑️</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-
-    {% for category, items in products_by_category.items() %}
-        <div class="category-title">{{ category }}</div>
-        {% for product in items %}
-            <div class="product-card">
-                <strong>{{ product.name }}</strong><br>
-                السعر: SDG {{ "{:,.0f}".format(product.price) }}<br>
-                الوحدة: {{ product.unit }}<br>
-                <a class="whatsapp-btn" href="https://wa.me/249916399000?text=أرغب في شراء {{ product.name }}" target="_blank">اطلب عبر واتساب</a>
-            </div>
-        {% endfor %}
     {% endfor %}
+</main>
+
+<footer>
+    <p>جميع الحقوق محفوظة &copy; Crops Hunter {{ current_year }}</p>
+</footer>
+
 </body>
 </html>
