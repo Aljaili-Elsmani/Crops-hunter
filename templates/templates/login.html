@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <title>تسجيل الدخول - Crops Hunter</title>
+</head>
+<body>
+    <h2>تسجيل الدخول</h2>
+    <form method="POST">
+        <label>اسم المستخدم:</label><br>
+        <input type="text" name="username" required><br><br>
+        <label>كلمة المرور:</label><br>
+        <input type="password" name="password" required><br><br>
+        <input type="submit" value="دخول">
+    </form>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            {% for category, message in messages %}
+                <div style="color: {% if category == 'error' %}red{% elif category == 'success' %}green{% else %}blue{% endif %}; margin-top: 10px;">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+</body>
+</html>
