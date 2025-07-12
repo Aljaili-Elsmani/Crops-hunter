@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.name }} - تفاصيل المنتج</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f2f5;
+        }
+        .product-box {
+            margin: 50px auto;
+            padding: 20px;
+            width: 300px;
+            background-color: white;
+            border-radius: 8px;
+            border: 1px solid #ccc;
+        }
+        h2 {
+            color: #007bff;
+        }
+        .info {
+            margin: 10px 0;
+        }
+        .back-btn {
+            margin-top: 20px;
+            display: inline-block;
+            background-color: #6c757d;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
+        }
+        .whatsapp-btn {
+            background-color: #25D366;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <div class="product-box">
+        <h2>{{ product.name }}</h2>
+        <div class="info">الفئة: {{ product.category }}</div>
+        <div class="info">السعر: {{ "{:,.0f}".format(product.price) }} SDG</div>
+        <div class="info">الوحدة: {{ product.unit }}</div>
+        {% if product.origin %}
+        <div class="info">بلد المنشأ: {{ product.origin }}</div>
+        {% endif %}
+        {% if product.quantity %}
+        <div class="info">الكمية: {{ product.quantity }}</div>
+        {% endif %}
+        {% if product.notes %}
+        <div class="info">ملاحظات: {{ product.notes }}</div>
+        {% endif %}
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=أرغب في شراء {{ product.name }}" target="_blank">اطلب عبر واتساب</a>
+    </div>
+    <a class="back-btn" href="{{ url_for('index') }}">العودة للرئيسية</a>
+</body>
+</html>
