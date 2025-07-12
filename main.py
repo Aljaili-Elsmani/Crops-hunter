@@ -7,6 +7,7 @@ app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قو
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # نموذج المنتج
@@ -21,12 +22,10 @@ class Product(db.Model):
 # الصفحة الرئيسية
 @app.route('/')
 def index():
-    products = Product.query.all()
+    products = Product.query.order_by(Product.date_added.desc()).all()
     products_by_category = {}
     for product in products:
-        if product.category not in products_by_category:
-            products_by_category[product.category] = []
-        products_by_category[product.category].append(product)
+        products_by_category.setdefault(product.category, []).append(product)
     return render_template('index.html', products_by_category=products_by_category)
 
 # صفحة تسجيل الدخول
@@ -55,19 +54,24 @@ def logout():
 def add_product():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+
     if request.method == 'POST':
-        name = request.form['name']
-        category = request.form['category']
-        price = request.form['price']
-        unit = request.form['unit']
+        name = request.form.get('name')
+        category = request.form.get('category')
+        price = request.form.get('price')
+        unit = request.form.get('unit')
+
         if not name or not category or not price:
             flash("يرجى ملء جميع الحقول المطلوبة", 'error')
-        else:
-            new_product = Product(name=name, category=category, price=price, unit=unit)
-            db.session.add(new_product)
-            db.session.commit()
-            flash("تمت إضافة المنتج بنجاح", 'success')
-            return redirect(url_for('index'))
+            return render_template('add_product.html')
+
+        new_product = Product(name=name, category=category, price=price, unit=unit)
+        db.session.add(new_product)
+        db.session.commit()
+
+        flash("تمت إضافة المنتج بنجاح", 'success')
+        return redirect(url_for('index'))
+
     return render_template('add_product.html')
 
 # صفحة من نحن
@@ -79,6 +83,7 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
+
 
 if __name__ == '__main__':
     with app.app_context():
