@@ -3,13 +3,11 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قوية
+app.secret_key = 'your_secret_key_here'
 
-# إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
-# نموذج المنتج
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -18,10 +16,9 @@ class Product(db.Model):
     unit = db.Column(db.String(20))
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
+    production_date = db.Column(db.String(7))
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
-# الصفحة الرئيسية
 @app.route('/')
 def index():
     products = Product.query.all()
@@ -32,7 +29,17 @@ def index():
         products_by_category[product.category].append(product)
     return render_template('index.html', products_by_category=products_by_category)
 
-# تسجيل الدخول
+@app.route('/delete/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    if not session.get('logged_in'):
+        flash("صلاحية غير متوفرة", 'error')
+        return redirect(url_for('index'))
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    flash("تم حذف المنتج", 'success')
+    return redirect(url_for('index'))
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -44,14 +51,12 @@ def login():
             flash("اسم المستخدم أو كلمة المرور غير صحيحة", 'error')
     return render_template('login.html')
 
-# تسجيل الخروج
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash("تم تسجيل الخروج", 'info')
     return redirect(url_for('index'))
 
-# إضافة منتج
 @app.route('/add', methods=['GET', 'POST'])
 def add_product():
     if not session.get('logged_in'):
@@ -85,7 +90,6 @@ def add_product():
 
     return render_template('add_product.html')
 
-# صفحات ثابتة
 @app.route('/about')
 def about():
     return render_template('about.html')
