@@ -8,20 +8,23 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f0f2f5;
+            padding-top: 50px;
         }
         .product-box {
-            margin: 50px auto;
+            margin: auto;
             padding: 20px;
-            width: 300px;
+            width: 350px;
             background-color: white;
             border-radius: 8px;
             border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
         }
         h2 {
             color: #007bff;
         }
         .info {
             margin: 10px 0;
+            font-size: 18px;
         }
         .back-btn {
             margin-top: 20px;
@@ -35,11 +38,11 @@
         .whatsapp-btn {
             background-color: #25D366;
             color: white;
-            padding: 8px 12px;
+            padding: 10px 15px;
             text-decoration: none;
             border-radius: 5px;
-            margin-top: 10px;
             display: inline-block;
+            margin-top: 15px;
         }
     </style>
 </head>
@@ -56,11 +59,11 @@
         <div class="info">مكان الإنتاج: {{ product.origin }}</div>
         {% endif %}
         {% if product.production_date %}
-        <div class="info">تاريخ الإنتاج: {{ product.production_date }}</div>
+        <div class="info">تاريخ الإنتاج: {{ product.production_date.strftime('%Y-%m-%d') }}</div>
         {% endif %}
-
-        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }}، الكمية: {{ product.quantity }}، مكان الاستلام: ..." target="_blank">اطلب عبر واتساب</a>
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }}، الكمية: ...، مكان الاستلام: ..." target="_blank">اطلب عبر واتساب</a>
+        <br>
+        <a class="back-btn" href="{{ url_for('index') }}">العودة للرئيسية</a>
     </div>
-    <a class="back-btn" href="{{ url_for('index') }}">العودة للرئيسية</a>
 </body>
 </html>
