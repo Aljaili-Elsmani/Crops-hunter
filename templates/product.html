@@ -8,57 +8,59 @@
             font-family: Arial, sans-serif;
             text-align: center;
             background-color: #f0f2f5;
-            padding: 30px;
         }
         .product-box {
-            margin: auto;
+            margin: 50px auto;
             padding: 20px;
-            max-width: 400px;
+            width: 300px;
             background-color: white;
             border-radius: 8px;
             border: 1px solid #ccc;
-            text-align: right;
-            direction: rtl;
         }
         h2 {
             color: #007bff;
-            margin-bottom: 20px;
         }
         .info {
             margin: 10px 0;
-            font-size: 16px;
-        }
-        .back-btn, .whatsapp-btn {
-            display: inline-block;
-            margin: 10px 5px 0 5px;
-            padding: 10px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-            color: white;
-            font-weight: bold;
-            cursor: pointer;
         }
         .back-btn {
+            margin-top: 20px;
+            display: inline-block;
             background-color: #6c757d;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 4px;
+            text-decoration: none;
         }
         .whatsapp-btn {
             background-color: #25D366;
+            color: white;
+            padding: 8px 12px;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 10px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
     <div class="product-box">
         <h2>{{ product.name }}</h2>
-        <div class="info"><strong>الفئة:</strong> {{ product.category }}</div>
-        <div class="info"><strong>السعر:</strong> {{ product.price }} جنيه سوداني</div>
-        <div class="info"><strong>الوحدة:</strong> {{ product.unit }}</div>
-        <div class="info"><strong>الكمية المتاحة:</strong> {{ product.quantity }}</div>
-        <div class="info"><strong>التوصيل:</strong> {{ product.delivery }}</div>
-        {% if product.notes %}
-        <div class="info"><strong>ملاحظات:</strong> {{ product.notes }}</div>
+        <div class="info">الفئة: {{ product.category }}</div>
+        <div class="info">السعر: {{ product.price }} جنيه سوداني</div>
+        <div class="info">الوحدة: {{ product.unit }}</div>
+        {% if product.quantity %}
+        <div class="info">الكمية المتوفرة: {{ product.quantity }}</div>
         {% endif %}
-        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }} الكمية: .... طن. 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank">اطلب عبر واتساب</a>
-        <a class="back-btn" href="{{ url_for('index') }}">العودة للرئيسية</a>
+        {% if product.origin %}
+        <div class="info">مكان الإنتاج: {{ product.origin }}</div>
+        {% endif %}
+        {% if product.production_date %}
+        <div class="info">تاريخ الإنتاج: {{ product.production_date }}</div>
+        {% endif %}
+
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }}، الكمية: {{ product.quantity }}، مكان الاستلام: ..." target="_blank">اطلب عبر واتساب</a>
     </div>
+    <a class="back-btn" href="{{ url_for('index') }}">العودة للرئيسية</a>
 </body>
 </html>
