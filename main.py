@@ -5,6 +5,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
 
+# إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
@@ -17,17 +18,8 @@ class Product(db.Model):
     unit = db.Column(db.String(20))
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
+    production_date = db.Column(db.String(7))  # شهر وسنة
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
-
-# ✅ فلتر تنسيق السعر
-@app.template_filter('format_price')
-def format_price(value):
-    try:
-        value = str(value).replace(',', '')
-        return "{:,}".format(int(value))
-    except:
-        return value
 
 # الصفحة الرئيسية
 @app.route('/')
@@ -93,6 +85,20 @@ def add_product():
 
     return render_template('add_product.html')
 
+# حذف منتج
+@app.route('/delete/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    if not session.get('logged_in'):
+        flash("يجب تسجيل الدخول لحذف المنتج", 'error')
+        return redirect(url_for('login'))
+
+    product = Product.query.get_or_404(product_id)
+    db.session.delete(product)
+    db.session.commit()
+    flash("تم حذف المنتج بنجاح", 'success')
+    return redirect(url_for('index'))
+
+# صفحات ثابتة
 @app.route('/about')
 def about():
     return render_template('about.html')
