@@ -4,11 +4,13 @@ from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'secret_key_here'  # غيّرها لمفتاح سري قوي
+app.secret_key = 'secret_key_here'  # غيرها لمفتاح آمن
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+# مجلد حفظ الصور
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
+# السماح فقط بامتدادات معينة
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
 db = SQLAlchemy(app)
@@ -28,6 +30,7 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
+# فلتر لتنسيق السعر مع فواصل الآلاف
 @app.template_filter('format_price')
 def format_price_filter(price):
     try:
@@ -46,7 +49,7 @@ def index():
 @app.route('/add_product', methods=['GET', 'POST'])
 def add_product():
     if not session.get('logged_in'):
-        flash('يرجى تسجيل الدخول أولاً', 'error')
+        flash('يجب تسجيل الدخول لإضافة منتج', 'error')
         return redirect(url_for('login'))
 
     if request.method == 'POST':
@@ -89,8 +92,8 @@ def add_product():
 @app.route('/delete_product/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
     if not session.get('logged_in'):
-        flash('يرجى تسجيل الدخول أولاً', 'error')
-        return redirect(url_for('login'))
+        flash('غير مصرح لك بحذف المنتج', 'error')
+        return redirect(url_for('index'))
 
     product = Product.query.get_or_404(product_id)
     if product.image_filename:
@@ -103,27 +106,20 @@ def delete_product(product_id):
     flash('تم حذف المنتج', 'success')
     return redirect(url_for('index'))
 
-@app.route('/contact')
-def contact():
-    return render_template('contact.html')
-
-@app.route('/about')
-def about():
-    return render_template('about.html')
-
-# صفحة تسجيل الدخول البسيطة (مثال)
+# صفحة تسجيل الدخول للمشرف (مثال بسيط)
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        # تحقق بسيط - عدّل حسب نظامك
-        if username == 'admin' and password == '1234':
+        # غيرها حسب بياناتك الحقيقية
+        if username == 'admin' and password == 'password123':
             session['logged_in'] = True
             flash('تم تسجيل الدخول بنجاح', 'success')
             return redirect(url_for('index'))
         else:
-            flash('اسم المستخدم أو كلمة المرور غير صحيحة', 'error')
+            flash('بيانات الدخول غير صحيحة', 'error')
+            return redirect(url_for('login'))
     return render_template('login.html')
 
 @app.route('/logout')
@@ -132,7 +128,16 @@ def logout():
     flash('تم تسجيل الخروج', 'info')
     return redirect(url_for('index'))
 
+@app.route('/contact')
+def contact():
+    return render_template('contact.html')
+
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(debug=True)
+    # الاستماع على كل الواجهات حتى Render يقدر يشغل التطبيق
+    app.run(host='0.0.0.0', debug=True)
