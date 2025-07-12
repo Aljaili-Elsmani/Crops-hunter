@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>إضافة منتج جديد - Crops Hunter</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9fafb;
+            direction: rtl;
+            padding: 30px;
+        }
+        .form-container {
+            max-width: 500px;
+            margin: auto;
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(0,0,0,0.1);
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input[type="text"],
+        input[type="number"],
+        select,
+        textarea {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+        button {
+            margin-top: 20px;
+            background-color: #007bff;
+            color: white;
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            width: 100%;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 15px;
+            text-decoration: none;
+            color: #555;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <h2>إضافة منتج جديد</h2>
+        <form method="POST" action="{{ url_for('add_product') }}">
+            <label for="name">اسم المنتج:</label>
+            <input type="text" id="name" name="name" required>
+
+            <label for="category">الفئة:</label>
+            <select id="category" name="category" required>
+                <option value="">اختر الفئة</option>
+                <option value="حبوب">حبوب</option>
+                <option value="بقوليات">بقوليات</option>
+                <option value="لحوم">لحوم</option>
+                <option value="فواكه">فواكه</option>
+                <option value="خضروات">خضروات</option>
+            </select>
+
+            <label for="price">السعر (بالجنيه السوداني):</label>
+            <input type="number" id="price" name="price" min="0" step="1" required>
+
+            <label for="unit">الوحدة:</label>
+            <input type="text" id="unit" name="unit" placeholder="كجم، طن، ...">
+
+            <label for="origin">بلد المنشأ (اختياري):</label>
+            <input type="text" id="origin" name="origin">
+
+            <label for="quantity">الكمية المتوفرة (اختياري):</label>
+            <input type="number" id="quantity" name="quantity" min="0" step="1">
+
+            <label for="notes">ملاحظات (اختياري):</label>
+            <textarea id="notes" name="notes" rows="3"></textarea>
+
+            <button type="submit">إضافة المنتج</button>
+        </form>
+        <a href="{{ url_for('index') }}" class="back-link">العودة للرئيسية</a>
+    </div>
+</body>
+</html>
