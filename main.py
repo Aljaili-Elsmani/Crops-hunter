@@ -3,7 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قوية
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
@@ -18,7 +18,7 @@ class Product(db.Model):
     unit = db.Column(db.String(20))
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(50))  # بصيغة شهر وسنة فقط
+    production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
 # الصفحة الرئيسية
@@ -26,18 +26,10 @@ class Product(db.Model):
 def index():
     products = Product.query.all()
     products_by_category = {}
-
     for product in products:
-        # تنسيق السعر (مثال: 5,999)
-        try:
-            product.formatted_price = "{:,}".format(int(str(product.price).replace(',', '')))
-        except:
-            product.formatted_price = product.price
-
         if product.category not in products_by_category:
             products_by_category[product.category] = []
         products_by_category[product.category].append(product)
-
     return render_template('index.html', products_by_category=products_by_category)
 
 # تسجيل الدخول
@@ -69,10 +61,10 @@ def add_product():
         name = request.form['name']
         category = request.form['category']
         price = request.form['price']
-        unit = request.form['unit']
-        quantity = request.form['quantity']
-        origin = request.form['origin']
-        production_date = request.form['production_date']  # شهر وسنة فقط
+        unit = request.form.get('unit', '')
+        quantity = request.form.get('quantity', '')
+        origin = request.form.get('origin', '')
+        production_date = request.form.get('production_date', '')
 
         if not name or not category or not price:
             flash("يرجى ملء الحقول المطلوبة", 'error')
