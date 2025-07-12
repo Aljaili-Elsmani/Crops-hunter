@@ -4,21 +4,9 @@
     <meta charset="UTF-8">
     <title>Crops Hunter - الرئيسية</title>
     <style>
-        body { font-family: Arial; direction: rtl; margin: 40px; background-color: #f9f9f9; }
-        .product {
-            border: 1px solid #ccc;
-            padding: 15px;
-            margin-bottom: 10px;
-            border-radius: 5px;
-            background-color: #fff;
-        }
-        .category-title {
-            margin-top: 30px;
-            font-size: 24px;
-            color: #333;
-            border-bottom: 2px solid #007bff;
-            padding-bottom: 5px;
-        }
+        body { font-family: Arial; direction: rtl; margin: 40px; }
+        .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .category-title { margin-top: 30px; font-size: 24px; color: #333; }
         .whatsapp-btn, .details-btn {
             background-color: #25D366;
             color: white;
@@ -26,7 +14,7 @@
             border: none;
             border-radius: 3px;
             text-decoration: none;
-            margin-left: 5px;
+            margin-left: 10px;
         }
         .details-btn {
             background-color: #007bff;
@@ -41,7 +29,6 @@
             margin-left: 10px;
             text-decoration: none;
             font-weight: bold;
-            color: #007bff;
         }
     </style>
 </head>
@@ -79,13 +66,11 @@
         <strong>{{ product.name }}</strong><br>
         السعر: {{ product.price }} جنيه سوداني<br>
         الوحدة: {{ product.unit }}<br>
-        {% if product.quantity %}
-        الكمية المتوفرة: {{ product.quantity }}<br>
-        {% endif %}
+        {% if product.quantity %}الكمية: {{ product.quantity }}<br>{% endif %}
+        {% if product.origin %}مكان الإنتاج: {{ product.origin }}<br>{% endif %}
+        {% if product.production_date %}تاريخ الإنتاج: {{ product.production_date }}<br>{% endif %}
         <a class="details-btn" href="{{ url_for('view_product', product_id=product.id) }}">عرض التفاصيل</a>
-        <a class="whatsapp-btn"
-           href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} الكمية: {{ product.quantity or '---' }} طن. %0A🔹 الاسم: %0A🔹 مكان الاستلام:"
-           target="_blank">اطلب عبر واتساب</a>
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }}.\n🔹 الكمية: {{ product.quantity }}\n🔹 مكان الاستلام: ....\n🔹 الاسم: ...." target="_blank">اطلب عبر واتساب</a>
     </div>
   {% endfor %}
 {% endfor %}
