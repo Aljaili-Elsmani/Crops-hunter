@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <div class="container mt-4">
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -23,7 +22,7 @@
           <div class="col">
             <div class="card h-100 shadow-sm">
               {% if category == 'حبوب' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="card-img-top" alt="حبوب">
+                <img src="https://cdn-icons-png.flaticon.com/512/3533/3533664.png" class="card-img-top" alt="حبوب">
               {% elif category == 'خضروات' %}
                 <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" class="card-img-top" alt="خضروات">
               {% elif category == 'لحوم' %}
@@ -36,16 +35,19 @@
 
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text mb-1"><strong>السعر:</strong> {{ "{:,}".format(product.price | int) }} جنيه سوداني</p>
-                <p class="card-text mb-1"><strong>الوحدة:</strong> {{ product.unit or '-' }}</p>
-                <p class="card-text mb-1"><strong>الكمية:</strong> {{ product.quantity or '-' }}</p>
-                <p class="card-text mb-1"><strong>مكان الإنتاج:</strong> {{ product.origin or '-' }}</p>
-                <p class="card-text mb-1"><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
+                <p><strong>السعر:</strong> {{ "{:,}".format(int(product.price.replace(',', ''))) }} جنيه سوداني</p>
+                <p><strong>الوحدة:</strong> {{ product.unit or '-' }}</p>
+                <p><strong>الكمية:</strong> {{ product.quantity or '-' }}</p>
+                <p><strong>مكان الإنتاج:</strong> {{ product.origin or '-' }}</p>
+                <p><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
               </div>
               <div class="card-footer bg-white d-flex justify-content-between">
-                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: {{ product.quantity or '---' }}). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">
-                  اطلب عبر واتساب
-                </a>
+                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: {{ product.quantity or '...' }}). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">اطلب عبر واتساب</a>
+                {% if session.get('logged_in') %}
+                  <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}">
+                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                  </form>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -55,5 +57,4 @@
     </section>
   {% endfor %}
 </div>
-
 {% endblock %}
