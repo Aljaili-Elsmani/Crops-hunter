@@ -3,11 +3,20 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'
+app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قوية
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
+
+# فلتر لتنسيق السعر باستخدام الفواصل
+@app.template_filter('format_price')
+def format_price_filter(value):
+    try:
+        clean_value = str(value).replace(',', '')
+        return "{:,}".format(int(clean_value))
+    except (ValueError, TypeError):
+        return value
 
 # نموذج المنتج
 class Product(db.Model):
@@ -18,7 +27,7 @@ class Product(db.Model):
     unit = db.Column(db.String(20))
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(7))  # شهر وسنة
+    production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
 # الصفحة الرئيسية
@@ -89,7 +98,7 @@ def add_product():
 @app.route('/delete/<int:product_id>', methods=['POST'])
 def delete_product(product_id):
     if not session.get('logged_in'):
-        flash("يجب تسجيل الدخول لحذف المنتج", 'error')
+        flash("يرجى تسجيل الدخول أولاً", 'error')
         return redirect(url_for('login'))
 
     product = Product.query.get_or_404(product_id)
