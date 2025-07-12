@@ -1,77 +1,94 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>إضافة منتج - Crops Hunter</title>
-    <style>
-        body {
-            background-color: #f7f7f7;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        .form-box {
-            width: 400px;
-            margin: auto;
-            background-color: #ffffff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-            text-align: right;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            direction: rtl;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #007bff;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .error {
-            color: red;
-            margin-bottom: 10px;
-        }
-        .success {
-            color: green;
-            margin-bottom: 10px;
-        }
-    </style>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
 </head>
 <body>
 
-<div class="form-box">
-    <h2>إضافة منتج</h2>
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">Crops Hunter</a>
+    <div class="collapse navbar-collapse justify-content-end">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">تواصل معنا</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">من نحن</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-      {% if messages %}
-        {% for category, message in messages %}
-          <div class="{{ category }}">{{ message }}</div>
-        {% endfor %}
-      {% endif %}
-    {% endwith %}
+<div class="container mt-5" style="max-width: 600px;">
 
-    <form method="post">
-        <input type="text" name="name" placeholder="اسم المنتج" required>
-        <input type="text" name="category" placeholder="الفئة (حبوب، بقوليات، خضروات...)" required>
-        <input type="text" name="price" placeholder="السعر (مثال: 5999)" required>
-        <input type="text" name="unit" placeholder="الوحدة (كيلو، طن، جرام...)">
-        <input type="text" name="quantity" placeholder="الكمية (مثال: 100 كيلو)">
-        <input type="text" name="origin" placeholder="مكان الإنتاج (مثال: الجزيرة)">
-        <input type="text" name="production_date" placeholder="تاريخ الإنتاج (مثال: 07-2024)" maxlength="7">
-        <button type="submit">إضافة</button>
-    </form>
+  <h2 class="mb-4">إضافة منتج جديد</h2>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'error' else 'info' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="POST" action="{{ url_for('add_product') }}">
+    <div class="mb-3">
+      <label for="name" class="form-label">اسم المنتج *</label>
+      <input type="text" class="form-control" id="name" name="name" required value="{{ request.form.name or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="category" class="form-label">الفئة *</label>
+      <select class="form-select" id="category" name="category" required>
+        <option value="" disabled selected>اختر الفئة</option>
+        <option value="حبوب" {% if request.form.category == 'حبوب' %}selected{% endif %}>حبوب</option>
+        <option value="خضروات" {% if request.form.category == 'خضروات' %}selected{% endif %}>خضروات</option>
+        <option value="لحوم" {% if request.form.category == 'لحوم' %}selected{% endif %}>لحوم</option>
+        <option value="بقوليات" {% if request.form.category == 'بقوليات' %}selected{% endif %}>بقوليات</option>
+        <option value="أخرى" {% if request.form.category == 'أخرى' %}selected{% endif %}>أخرى</option>
+      </select>
+    </div>
+
+    <div class="mb-3">
+      <label for="price" class="form-label">السعر (جنيه سوداني) *</label>
+      <input type="text" class="form-control" id="price" name="price" required pattern="[\d,]+" title="ادخل أرقام فقط مع إمكانية الفواصل" value="{{ request.form.price or '' }}">
+      <div class="form-text">يمكنك كتابة السعر بالأرقام مع فواصل آلاف، مثلاً: 5,999</div>
+    </div>
+
+    <div class="mb-3">
+      <label for="unit" class="form-label">الوحدة</label>
+      <input type="text" class="form-control" id="unit" name="unit" placeholder="مثلاً: كيلو، طن، صندوق" value="{{ request.form.unit or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="quantity" class="form-label">الكمية</label>
+      <input type="text" class="form-control" id="quantity" name="quantity" placeholder="مثلاً: 100 كيلو، 50 طن" value="{{ request.form.quantity or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="origin" class="form-label">مكان الإنتاج</label>
+      <input type="text" class="form-control" id="origin" name="origin" placeholder="مثلاً: الجزيرة" value="{{ request.form.origin or '' }}">
+    </div>
+
+    <div class="mb-3">
+      <label for="production_date" class="form-label">تاريخ الإنتاج (شهر وسنة)</label>
+      <input type="month" class="form-control" id="production_date" name="production_date" value="{{ request.form.production_date or '' }}">
+      <div class="form-text">اختر الشهر والسنة فقط</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary">إضافة المنتج</button>
+  </form>
 </div>
+
+<!-- Bootstrap JS مع Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 </html>
