@@ -7,7 +7,6 @@ app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قو
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 # نموذج المنتج
@@ -17,16 +16,27 @@ class Product(db.Model):
     category = db.Column(db.String(50), nullable=False)
     price = db.Column(db.String(20), nullable=False)
     unit = db.Column(db.String(20), nullable=True)
+    quantity = db.Column(db.String(50), nullable=True)
+    delivery = db.Column(db.String(50), nullable=True)
+    notes = db.Column(db.String(255), nullable=True)
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
 # الصفحة الرئيسية
 @app.route('/')
 def index():
-    products = Product.query.order_by(Product.date_added.desc()).all()
+    products = Product.query.all()
     products_by_category = {}
     for product in products:
-        products_by_category.setdefault(product.category, []).append(product)
+        if product.category not in products_by_category:
+            products_by_category[product.category] = []
+        products_by_category[product.category].append(product)
     return render_template('index.html', products_by_category=products_by_category)
+
+# صفحة تفاصيل المنتج
+@app.route('/product/<int:product_id>')
+def product_detail(product_id):
+    product = Product.query.get_or_404(product_id)
+    return render_template('product.html', product=product)
 
 # صفحة تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
@@ -54,24 +64,31 @@ def logout():
 def add_product():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
-
     if request.method == 'POST':
-        name = request.form.get('name')
-        category = request.form.get('category')
-        price = request.form.get('price')
+        name = request.form['name']
+        category = request.form['category']
+        price = request.form['price']
         unit = request.form.get('unit')
+        quantity = request.form.get('quantity')
+        delivery = request.form.get('delivery')
+        notes = request.form.get('notes')
 
         if not name or not category or not price:
             flash("يرجى ملء جميع الحقول المطلوبة", 'error')
-            return render_template('add_product.html')
-
-        new_product = Product(name=name, category=category, price=price, unit=unit)
-        db.session.add(new_product)
-        db.session.commit()
-
-        flash("تمت إضافة المنتج بنجاح", 'success')
-        return redirect(url_for('index'))
-
+        else:
+            new_product = Product(
+                name=name,
+                category=category,
+                price=price,
+                unit=unit,
+                quantity=quantity,
+                delivery=delivery,
+                notes=notes
+            )
+            db.session.add(new_product)
+            db.session.commit()
+            flash("تمت إضافة المنتج بنجاح", 'success')
+            return redirect(url_for('index'))
     return render_template('add_product.html')
 
 # صفحة من نحن
@@ -83,7 +100,6 @@ def about():
 @app.route('/contact')
 def contact():
     return render_template('contact.html')
-
 
 if __name__ == '__main__':
     with app.app_context():
