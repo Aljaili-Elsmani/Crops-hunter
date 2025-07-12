@@ -1,22 +1,32 @@
-from flask import Flask, render_template, request, redirect, url_for, flash, session
+from flask import Flask, render_template, request, redirect, url_for, flash, session, send_from_directory
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
-app.secret_key = 'your_secret_key_here'  # استبدلها بكلمة سر قوية
+app.secret_key = 'your_secret_key_here'
 
 # إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
-# فلتر لتنسيق السعر باستخدام الفواصل
+# مسار رفع الصور
+UPLOAD_FOLDER = os.path.join('static', 'uploads')
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# التحقق من امتداد الصورة
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# تسجيل فلتر تنسيق السعر
 @app.template_filter('format_price')
-def format_price_filter(value):
+def format_price(price_str):
     try:
-        clean_value = str(value).replace(',', '')
-        return "{:,}".format(int(clean_value))
-    except (ValueError, TypeError):
-        return value
+        return "{:,}".format(int(str(price_str).replace(',', '').strip()))
+    except ValueError:
+        return price_str
 
 # نموذج المنتج
 class Product(db.Model):
@@ -28,6 +38,7 @@ class Product(db.Model):
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
     production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
+    image_filename = db.Column(db.String(100))  # اسم ملف الصورة
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
 # الصفحة الرئيسية
@@ -53,7 +64,6 @@ def login():
             flash("اسم المستخدم أو كلمة المرور غير صحيحة", 'error')
     return render_template('login.html')
 
-# تسجيل الخروج
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
@@ -74,6 +84,12 @@ def add_product():
         quantity = request.form.get('quantity', '')
         origin = request.form.get('origin', '')
         production_date = request.form.get('production_date', '')
+        image = request.files.get('image')
+        filename = None
+
+        if image and allowed_file(image.filename):
+            filename = secure_filename(image.filename)
+            image.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
 
         if not name or not category or not price:
             flash("يرجى ملء الحقول المطلوبة", 'error')
@@ -85,7 +101,8 @@ def add_product():
                 unit=unit,
                 quantity=quantity,
                 origin=origin,
-                production_date=production_date
+                production_date=production_date,
+                image_filename=filename
             )
             db.session.add(new_product)
             db.session.commit()
@@ -94,20 +111,6 @@ def add_product():
 
     return render_template('add_product.html')
 
-# حذف منتج
-@app.route('/delete/<int:product_id>', methods=['POST'])
-def delete_product(product_id):
-    if not session.get('logged_in'):
-        flash("يرجى تسجيل الدخول أولاً", 'error')
-        return redirect(url_for('login'))
-
-    product = Product.query.get_or_404(product_id)
-    db.session.delete(product)
-    db.session.commit()
-    flash("تم حذف المنتج بنجاح", 'success')
-    return redirect(url_for('index'))
-
-# صفحات ثابتة
 @app.route('/about')
 def about():
     return render_template('about.html')
@@ -116,7 +119,23 @@ def about():
 def contact():
     return render_template('contact.html')
 
+# حذف منتج
+@app.route('/delete/<int:product_id>', methods=['POST'])
+def delete_product(product_id):
+    if not session.get('logged_in'):
+        flash("يجب تسجيل الدخول", 'error')
+        return redirect(url_for('login'))
+    product = Product.query.get_or_404(product_id)
+    if product.image_filename:
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], product.image_filename)
+        if os.path.exists(image_path):
+            os.remove(image_path)
+    db.session.delete(product)
+    db.session.commit()
+    flash("تم حذف المنتج بنجاح", 'success')
+    return redirect(url_for('index'))
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', debug=True)
+    app.run(debug=True)
