@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+
 {% block content %}
 <div class="container mt-4">
 
@@ -14,18 +15,18 @@
   {% endwith %}
 
   {% for category, products in products_by_category.items() %}
-    <section class="category-section">
-      <h3 class="mb-3">{{ category }}</h3>
+    <section class="category-section mb-5">
+      <h3 class="mb-3 text-primary">{{ category }}</h3>
       <div class="row row-cols-1 row-cols-md-3 g-4">
 
         {% for product in products %}
           <div class="col">
             <div class="card h-100 shadow-sm">
-              <!-- عرض صورة المنتج -->
+
               {% if product.image_filename %}
                 <img src="{{ url_for('static', filename='uploads/' ~ product.image_filename) }}" class="card-img-top" alt="صورة المنتج">
               {% else %}
-                <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" class="card-img-top" alt="صورة افتراضية">
+                <img src="https://via.placeholder.com/300x180?text=No+Image" class="card-img-top" alt="لا توجد صورة">
               {% endif %}
 
               <div class="card-body">
@@ -37,19 +38,18 @@
                 <p class="card-text mb-1"><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
               </div>
 
-              <div class="card-footer bg-white d-flex justify-content-between align-items-center">
-                <!-- زر واتساب -->
+              <div class="card-footer bg-white d-flex justify-content-between">
                 <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: ....). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">
                   اطلب عبر واتساب
                 </a>
 
-                <!-- زر الحذف إن كان المشرف مسجلاً الدخول -->
                 {% if session.get('logged_in') %}
-                  <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟');">
+                  <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف المنتج؟')">
                     <button type="submit" class="btn btn-danger btn-sm">حذف</button>
                   </form>
                 {% endif %}
               </div>
+
             </div>
           </div>
         {% endfor %}
@@ -57,8 +57,6 @@
       </div>
     </section>
   {% endfor %}
-</div>
 
-<!-- Bootstrap JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</div>
 {% endblock %}
