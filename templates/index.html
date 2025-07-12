@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 {% block content %}
-
 <div class="container mt-4">
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -15,49 +14,38 @@
   {% endwith %}
 
   {% for category, products in products_by_category.items() %}
-    <section class="category-section mb-5">
+    <section class="category-section">
       <h3 class="mb-3">{{ category }}</h3>
       <div class="row row-cols-1 row-cols-md-3 g-4">
 
         {% for product in products %}
           <div class="col">
             <div class="card h-100 shadow-sm">
-              <!-- صور افتراضية حسب الفئة -->
-              {% if category == 'حبوب' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="card-img-top" alt="حبوب">
-              {% elif category == 'خضروات' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" class="card-img-top" alt="خضروات">
-              {% elif category == 'لحوم' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" class="card-img-top" alt="لحوم">
-              {% elif category == 'بقوليات' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="card-img-top" alt="بقوليات">
+              <!-- عرض صورة المنتج -->
+              {% if product.image_filename %}
+                <img src="{{ url_for('static', filename='uploads/' ~ product.image_filename) }}" class="card-img-top" alt="صورة المنتج">
               {% else %}
-                <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" class="card-img-top" alt="منتج">
+                <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" class="card-img-top" alt="صورة افتراضية">
               {% endif %}
 
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text mb-1"><strong>السعر:</strong> 
-                  {% if product.price.replace(',', '').isdigit() %}
-                    {{ "{:,}".format(product.price.replace(',', '') | int) }} جنيه سوداني
-                  {% else %}
-                    {{ product.price }}
-                  {% endif %}
-                </p>
+                <p class="card-text mb-1"><strong>السعر:</strong> {{ product.price | format_price }} جنيه سوداني</p>
                 <p class="card-text mb-1"><strong>الوحدة:</strong> {{ product.unit or '-' }}</p>
                 <p class="card-text mb-1"><strong>الكمية:</strong> {{ product.quantity or '-' }}</p>
                 <p class="card-text mb-1"><strong>مكان الإنتاج:</strong> {{ product.origin or '-' }}</p>
                 <p class="card-text mb-1"><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
               </div>
-              <div class="card-footer bg-white d-flex justify-content-between">
+
+              <div class="card-footer bg-white d-flex justify-content-between align-items-center">
                 <!-- زر واتساب -->
-                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: {{ product.quantity or '---' }}). 🔹 الاسم: 🔹 مكان الاستلام:" 
-                   target="_blank" class="btn btn-success btn-sm">
+                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: ....). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">
                   اطلب عبر واتساب
                 </a>
-                <!-- زر الحذف يظهر فقط للمشرف -->
+
+                <!-- زر الحذف إن كان المشرف مسجلاً الدخول -->
                 {% if session.get('logged_in') %}
-                  <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟');">
+                  <form method="POST" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟');">
                     <button type="submit" class="btn btn-danger btn-sm">حذف</button>
                   </form>
                 {% endif %}
@@ -69,7 +57,8 @@
       </div>
     </section>
   {% endfor %}
-
 </div>
 
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 {% endblock %}
