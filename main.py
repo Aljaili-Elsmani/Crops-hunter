@@ -4,28 +4,43 @@ from datetime import datetime
 
 app = Flask(__name__)
 app.secret_key = 'your_secret_key_here'
+
+# إعداد قاعدة البيانات
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
+# نموذج المنتج
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
     category = db.Column(db.String(50), nullable=False)
-    price = db.Column(db.String(20), nullable=False)  # للحفاظ على تنسيق الفواصل
+    price = db.Column(db.String(20), nullable=False)
     unit = db.Column(db.String(20))
-    quantity = db.Column(db.String(50))  # لتسمح بـ "100 كيلو"
+    quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(50))  # بصيغة "07/2024"
+    production_date = db.Column(db.String(50))  # بصيغة شهر وسنة فقط
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
+# الصفحة الرئيسية
 @app.route('/')
 def index():
     products = Product.query.all()
     products_by_category = {}
+
     for product in products:
-        products_by_category.setdefault(product.category, []).append(product)
+        # تنسيق السعر (مثال: 5,999)
+        try:
+            product.formatted_price = "{:,}".format(int(str(product.price).replace(',', '')))
+        except:
+            product.formatted_price = product.price
+
+        if product.category not in products_by_category:
+            products_by_category[product.category] = []
+        products_by_category[product.category].append(product)
+
     return render_template('index.html', products_by_category=products_by_category)
 
+# تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -33,19 +48,23 @@ def login():
             session['logged_in'] = True
             flash("تم تسجيل الدخول بنجاح", 'success')
             return redirect(url_for('add_product'))
-        flash("اسم المستخدم أو كلمة المرور غير صحيحة", 'error')
+        else:
+            flash("اسم المستخدم أو كلمة المرور غير صحيحة", 'error')
     return render_template('login.html')
 
+# تسجيل الخروج
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash("تم تسجيل الخروج", 'info')
     return redirect(url_for('index'))
 
+# إضافة منتج
 @app.route('/add', methods=['GET', 'POST'])
 def add_product():
     if not session.get('logged_in'):
         return redirect(url_for('login'))
+
     if request.method == 'POST':
         name = request.form['name']
         category = request.form['category']
@@ -53,7 +72,7 @@ def add_product():
         unit = request.form['unit']
         quantity = request.form['quantity']
         origin = request.form['origin']
-        production_date = request.form['production_date']
+        production_date = request.form['production_date']  # شهر وسنة فقط
 
         if not name or not category or not price:
             flash("يرجى ملء الحقول المطلوبة", 'error')
@@ -71,8 +90,10 @@ def add_product():
             db.session.commit()
             flash("تمت إضافة المنتج بنجاح", 'success')
             return redirect(url_for('index'))
+
     return render_template('add_product.html')
 
+# صفحات ثابتة
 @app.route('/about')
 def about():
     return render_template('about.html')
