@@ -4,16 +4,30 @@
     <meta charset="UTF-8">
     <title>Crops Hunter - الرئيسية</title>
     <style>
-        body { font-family: Arial; direction: rtl; margin: 40px; }
-        .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
-        .category-title { margin-top: 30px; font-size: 24px; color: #333; }
+        body { font-family: Arial; direction: rtl; margin: 40px; background-color: #f8f9fa; }
+        .product { 
+            border: 1px solid #ccc; 
+            padding: 15px; 
+            margin-bottom: 15px; 
+            border-radius: 8px; 
+            background-color: white;
+        }
+        .category-title { 
+            margin-top: 40px; 
+            font-size: 24px; 
+            color: #333; 
+            border-bottom: 2px solid #007bff;
+            padding-bottom: 5px;
+        }
         .whatsapp-btn {
             background-color: #25D366;
             color: white;
-            padding: 5px 10px;
+            padding: 6px 12px;
             border: none;
-            border-radius: 3px;
+            border-radius: 4px;
             text-decoration: none;
+            display: inline-block;
+            margin-top: 10px;
         }
         .header {
             display: flex;
@@ -25,6 +39,10 @@
             margin-left: 10px;
             text-decoration: none;
             font-weight: bold;
+            color: #007bff;
+        }
+        .info {
+            margin: 5px 0;
         }
     </style>
 </head>
@@ -59,13 +77,19 @@
   <div class="category-title">{{ category }}</div>
   {% for product in products %}
     <div class="product">
-        <strong>{{ product.name }}</strong><br>
-        السعر: {{ "{:,}".format(int(product.price.replace(',', ''))) }} جنيه سوداني<br>
-        الوحدة: {{ product.unit }}<br>
-        {% if product.quantity %}الكمية: {{ product.quantity }}<br>{% endif %}
-        {% if product.origin %}مكان الإنتاج: {{ product.origin }}<br>{% endif %}
-        {% if product.production_date %}تاريخ الإنتاج: {{ product.production_date }}<br>{% endif %}
-        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }} الكمية: {{ product.quantity or '---' }} 🔹 الاسم:  🔹 مكان الاستلام: " target="_blank">اطلب عبر واتساب</a>
+        <div class="info"><strong>{{ product.name }}</strong></div>
+        <div class="info">السعر: {{ "{:,.0f}".format(product.price | int) }} جنيه سوداني</div>
+        <div class="info">الوحدة: {{ product.unit }}</div>
+        {% if product.quantity %}
+            <div class="info">الكمية: {{ product.quantity }}</div>
+        {% endif %}
+        {% if product.origin %}
+            <div class="info">مكان الإنتاج: {{ product.origin }}</div>
+        {% endif %}
+        {% if product.production_date %}
+            <div class="info">تاريخ الإنتاج: {{ product.production_date }}</div>
+        {% endif %}
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }}.\nالكمية: {{ product.quantity }}\nمكان الاستلام: ....\nالاسم: ...." target="_blank">اطلب عبر واتساب</a>
     </div>
   {% endfor %}
 {% endfor %}
