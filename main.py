@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, session
 from flask_sqlalchemy import SQLAlchemy
 from werkzeug.utils import secure_filename
 
@@ -30,13 +30,14 @@ def allowed_file(filename):
     return '.' in filename and \
            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# فلتر لتنسيق السعر مع فواصل الآلاف
-@app.template_filter('format_price')
+# تسجيل فلتر تنسيق السعر داخل Jinja
 def format_price_filter(price):
     try:
         return "{:,}".format(int(price))
     except:
         return price
+
+app.jinja_env.filters['format_price'] = format_price_filter
 
 @app.route('/')
 def index():
@@ -101,7 +102,6 @@ def delete_product(product_id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    # إنشاء قاعدة البيانات لو لم تكن موجودة
     with app.app_context():
         db.create_all()
     app.run(debug=True)
