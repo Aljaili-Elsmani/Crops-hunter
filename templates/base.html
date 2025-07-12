@@ -1,59 +1,61 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>Crops Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.rtl.min.css" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f8f9fa;
+        }
+        .navbar-nav .nav-link {
+            margin-left: 15px;
+        }
+        h1, h3 {
+            color: #2b4e3f;
+        }
+    </style>
+</head>
+<body>
 
-{% block content %}
-<div class="container mt-4">
+<!-- شريط التنقل -->
+<nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{{ url_for('index') }}">Crops Hunter</a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent"
+      aria-controls="navbarContent" aria-expanded="false" aria-label="قائمة التنقل">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-  {% with messages = get_flashed_messages(with_categories=true) %}
-    {% if messages %}
-      {% for category, message in messages %}
-        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' if category == 'error' else 'info' }} alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-  {% endwith %}
+    <div class="collapse navbar-collapse justify-content-end" id="navbarContent">
+      <ul class="navbar-nav">
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('index') }}">الرئيسية</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('contact') }}">تواصل معنا</a></li>
+        <li class="nav-item"><a class="nav-link" href="{{ url_for('about') }}">من نحن</a></li>
+        {% if session.get('logged_in') %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('add_product') }}">إضافة منتج</a></li>
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('logout') }}">تسجيل الخروج</a></li>
+        {% else %}
+          <li class="nav-item"><a class="nav-link" href="{{ url_for('login') }}">تسجيل الدخول</a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+</nav>
 
-  {% for category, products in products_by_category.items() %}
-    <section class="category-section">
-      <h3 class="mb-3">{{ category }}</h3>
-      <div class="row row-cols-1 row-cols-md-3 g-4">
-
-        {% for product in products %}
-          <div class="col">
-            <div class="card h-100 shadow-sm">
-              <!-- صور افتراضية حسب الفئة -->
-              {% if category == 'حبوب' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="card-img-top" alt="حبوب">
-              {% elif category == 'خضروات' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/415/415733.png" class="card-img-top" alt="خضروات">
-              {% elif category == 'لحوم' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/1046/1046784.png" class="card-img-top" alt="لحوم">
-              {% elif category == 'بقوليات' %}
-                <img src="https://cdn-icons-png.flaticon.com/512/616/616408.png" class="card-img-top" alt="بقوليات">
-              {% else %}
-                <img src="https://cdn-icons-png.flaticon.com/512/565/565547.png" class="card-img-top" alt="منتج">
-              {% endif %}
-
-              <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text mb-1"><strong>السعر:</strong> {{ product.price | format_price }} جنيه سوداني</p>
-                <p class="card-text mb-1"><strong>الوحدة:</strong> {{ product.unit or '-' }}</p>
-                <p class="card-text mb-1"><strong>الكمية:</strong> {{ product.quantity or '-' }}</p>
-                <p class="card-text mb-1"><strong>مكان الإنتاج:</strong> {{ product.origin or '-' }}</p>
-                <p class="card-text mb-1"><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
-              </div>
-              <div class="card-footer bg-white d-flex justify-content-between">
-                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: ....). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">
-                  اطلب عبر واتساب
-                </a>
-              </div>
-            </div>
-          </div>
-        {% endfor %}
-
-      </div>
-    </section>
-  {% endfor %}
+<!-- محتوى الصفحة -->
+<div class="container py-4">
+    {% block content %}
+    {% endblock %}
 </div>
-{% endblock %}
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
