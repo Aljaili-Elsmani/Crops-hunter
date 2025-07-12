@@ -2,132 +2,73 @@
 <html lang="ar">
 <head>
     <meta charset="UTF-8">
-    <title>Crops Hunter - الصفحة الرئيسية</title>
+    <title>Crops Hunter - الرئيسية</title>
     <style>
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            direction: rtl;
-            margin: 0;
-            padding: 0;
-            background-color: #f7f9fc;
-            color: #333;
-        }
-        header, footer {
-            background-color: #005f99;
-            color: white;
-            padding: 15px 20px;
-            text-align: center;
-        }
-        nav {
-            background-color: #007acc;
-            padding: 10px 0;
-            text-align: center;
-        }
-        nav a {
-            color: white;
-            margin: 0 15px;
-            text-decoration: none;
-            font-weight: bold;
-        }
-        nav a:hover {
-            text-decoration: underline;
-        }
-        .category-section {
-            margin: 30px auto;
-            width: 90%;
-        }
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            background-color: white;
-            box-shadow: 0 0 10px #ccc;
-            margin-bottom: 40px;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-        }
-        th {
-            background-color: #e9f5ff;
-        }
-        .btn-whatsapp {
+        body { font-family: Arial; direction: rtl; margin: 40px; }
+        .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
+        .category-title { margin-top: 30px; font-size: 24px; color: #333; }
+        .whatsapp-btn {
             background-color: #25D366;
             color: white;
-            padding: 8px 12px;
+            padding: 5px 10px;
             border: none;
-            border-radius: 5px;
+            border-radius: 3px;
+            text-decoration: none;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .header a {
+            margin-left: 10px;
             text-decoration: none;
             font-weight: bold;
-            display: inline-block;
-            margin: 3px 0;
-        }
-        .btn-whatsapp:hover {
-            background-color: #1ebc59;
         }
     </style>
 </head>
 <body>
 
-<header>
+<div class="header">
     <h1>Crops Hunter</h1>
-</header>
-
-<nav>
-    <a href="{{ url_for('index') }}">الرئيسية</a>
-    <a href="{{ url_for('contact') }}">تواصل معنا</a>
-    <a href="{{ url_for('about') }}">من نحن</a>
-    <a href="{{ url_for('admin') }}">لوحة التحكم</a>
-</nav>
-
-<main>
-    {% for category, products in products_by_category.items() %}
-    <div class="category-section">
-        <h2>الفئة: {{ category }}</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>اسم المنتج</th>
-                    <th>السعر</th>
-                    <th>الوحدة</th>
-                    <th>الكمية</th>
-                    <th>الأصل</th>
-                    <th>ملاحظات</th>
-                    <th>اطلب</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>{{ product.name }}</td>
-                    <td>{{ product.price }}</td>
-                    <td>{{ product.unit }}</td>
-                    <td>{{ product.quantity or '-' }}</td>
-                    <td>{{ product.origin or '-' }}</td>
-                    <td>{{ product.notes or '-' }}</td>
-                    <td>
-                        <a class="btn-whatsapp"
-                           href="https://wa.me/249916399000?text=مرحبًا،%20أرغب%20في%20طلب%20{{ product.name }}%20كمية%20{{ product.quantity or '---' }}%20{{ product.unit }}.%0A%0A🔹%20الاسم%20:%20%0A🔹%20الكمية%20:%20%0A🔹%20مكان%20الاستلام%20:%20%0A"
-                           target="_blank" title="اطلب عبر الواتساب الرقم السوداني">
-                            🇸🇩 اطلب عبر واتساب
-                        </a><br>
-                        <a class="btn-whatsapp"
-                           href="https://wa.me/971562967621?text=مرحبًا،%20أرغب%20في%20طلب%20{{ product.name }}%20كمية%20{{ product.quantity or '---' }}%20{{ product.unit }}.%0A%0A🔹%20الاسم%20:%20%0A🔹%20الكمية%20:%20%0A🔹%20مكان%20الاستلام%20:%20%0A"
-                           target="_blank" title="اطلب عبر الواتساب الرقم الإماراتي">
-                            🇦🇪 اطلب عبر واتساب
-                        </a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+    <div>
+        <a href="{{ url_for('index') }}">الرئيسية</a>
+        <a href="{{ url_for('contact') }}">تواصل معنا</a>
+        <a href="{{ url_for('about') }}">من نحن</a>
+        {% if session.get('logged_in') %}
+            <a href="{{ url_for('add_product') }}">إضافة منتج</a>
+            <a href="{{ url_for('logout') }}">تسجيل الخروج</a>
+        {% else %}
+            <a href="{{ url_for('login') }}">تسجيل الدخول</a>
+        {% endif %}
     </div>
-    {% endfor %}
-</main>
+</div>
 
-<footer>
-    <p>جميع الحقوق محفوظة &copy; Crops Hunter {{ current_year }}</p>
-</footer>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    {% for category, message in messages %}
+      <div style="padding: 10px; background-color: {% if category == 'success' %}#d4edda{% elif category == 'error' %}#f8d7da{% else %}#cce5ff{% endif %}; margin-bottom: 10px; border-radius: 5px;">
+        {{ message }}
+      </div>
+    {% endfor %}
+  {% endif %}
+{% endwith %}
+
+{% for category, products in products_by_category.items() %}
+  <div class="category-title">{{ category }}</div>
+  {% for product in products %}
+    <div class="product">
+        <strong>{{ product.name }}</strong><br>
+        السعر: {{ product.price }} جنيه سوداني<br>
+        الوحدة: {{ product.unit }}<br>
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} الكمية: .... طن. 
+        🔹 الاسم: 
+        🔹 مكان الاستلام: 
+        " target="_blank">اطلب عبر واتساب</a>
+    </div>
+  {% endfor %}
+{% endfor %}
 
 </body>
 </html>
