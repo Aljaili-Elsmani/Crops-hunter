@@ -4,42 +4,34 @@
     <meta charset="UTF-8">
     <title>إضافة منتج - Crops Hunter</title>
     <style>
-        body {
-            background-color: #f2f2f2;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            padding-top: 50px;
-        }
-        .form-box {
-            background-color: #ffffff;
-            margin: auto;
-            padding: 30px;
-            width: 350px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        input[type="text"] {
-            width: 90%;
+        body { font-family: Arial; direction: rtl; margin: 40px; }
+        form { max-width: 400px; margin: auto; }
+        input, select, textarea {
+            width: 100%;
             padding: 10px;
             margin-bottom: 15px;
-            border-radius: 4px;
+            border-radius: 5px;
             border: 1px solid #ccc;
+            box-sizing: border-box;
+            font-size: 14px;
         }
         button {
             padding: 10px 20px;
             background-color: #007bff;
-            color: white;
             border: none;
-            border-radius: 4px;
+            color: white;
+            border-radius: 5px;
             cursor: pointer;
+            font-size: 16px;
         }
         button:hover {
             background-color: #0056b3;
         }
-        .message {
-            margin-bottom: 15px;
+        .messages {
+            max-width: 400px;
+            margin: 10px auto;
             padding: 10px;
-            border-radius: 4px;
+            border-radius: 5px;
         }
         .success {
             background-color: #d4edda;
@@ -52,28 +44,33 @@
     </style>
 </head>
 <body>
-    <div class="form-box">
-        <h2>إضافة منتج</h2>
 
-        <!-- رسائل النجاح أو الخطأ -->
-        {% with messages = get_flashed_messages(with_categories=true) %}
-          {% if messages %}
-            {% for category, message in messages %}
-              <div class="message {{ category }}">{{ message }}</div>
-            {% endfor %}
-          {% endif %}
-        {% endwith %}
+<h2 style="text-align:center;">إضافة منتج جديد</h2>
 
-        <form method="post">
-            <input type="text" name="name" placeholder="اسم المنتج" required><br>
-            <input type="text" name="category" placeholder="الفئة" required><br>
-            <input type="text" name="price" placeholder="السعر" required><br>
-            <input type="text" name="unit" placeholder="الوحدة (مثلاً: طن، كيلو)" ><br>
-            <button type="submit">إضافة</button>
-        </form>
-
-        <br>
-        <a href="{{ url_for('index') }}">العودة للرئيسية</a>
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="messages">
+      {% for category, message in messages %}
+        <div class="{{ category }}">{{ message }}</div>
+      {% endfor %}
     </div>
+  {% endif %}
+{% endwith %}
+
+<form method="post">
+    <input type="text" name="name" placeholder="اسم المنتج" required>
+    <input type="text" name="category" placeholder="الفئة" required>
+    <input type="text" name="price" placeholder="السعر" required>
+    <input type="text" name="unit" placeholder="الوحدة (كيلو، طن...)" >
+    <input type="text" name="quantity" placeholder="الكمية المتاحة" >
+    <select name="delivery">
+        <option value="">هل يوجد توصيل؟</option>
+        <option value="نعم">نعم</option>
+        <option value="لا">لا</option>
+    </select>
+    <textarea name="notes" placeholder="ملاحظات إضافية"></textarea>
+    <button type="submit">إضافة المنتج</button>
+</form>
+
 </body>
 </html>
