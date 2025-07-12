@@ -8,6 +8,7 @@ app.secret_key = 'your_secret_key_here'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///products.db'
 db = SQLAlchemy(app)
 
+# نموذج المنتج
 class Product(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), nullable=False)
@@ -16,9 +17,19 @@ class Product(db.Model):
     unit = db.Column(db.String(20))
     quantity = db.Column(db.String(50))
     origin = db.Column(db.String(100))
-    production_date = db.Column(db.String(7))
+    production_date = db.Column(db.String(7))  # صيغة: YYYY-MM
     date_added = db.Column(db.DateTime, default=datetime.utcnow)
 
+# ✅ فلتر تنسيق السعر
+@app.template_filter('format_price')
+def format_price(value):
+    try:
+        value = str(value).replace(',', '')
+        return "{:,}".format(int(value))
+    except:
+        return value
+
+# الصفحة الرئيسية
 @app.route('/')
 def index():
     products = Product.query.all()
@@ -29,17 +40,7 @@ def index():
         products_by_category[product.category].append(product)
     return render_template('index.html', products_by_category=products_by_category)
 
-@app.route('/delete/<int:product_id>', methods=['POST'])
-def delete_product(product_id):
-    if not session.get('logged_in'):
-        flash("صلاحية غير متوفرة", 'error')
-        return redirect(url_for('index'))
-    product = Product.query.get_or_404(product_id)
-    db.session.delete(product)
-    db.session.commit()
-    flash("تم حذف المنتج", 'success')
-    return redirect(url_for('index'))
-
+# تسجيل الدخول
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -51,12 +52,14 @@ def login():
             flash("اسم المستخدم أو كلمة المرور غير صحيحة", 'error')
     return render_template('login.html')
 
+# تسجيل الخروج
 @app.route('/logout')
 def logout():
     session.pop('logged_in', None)
     flash("تم تسجيل الخروج", 'info')
     return redirect(url_for('index'))
 
+# إضافة منتج
 @app.route('/add', methods=['GET', 'POST'])
 def add_product():
     if not session.get('logged_in'):
