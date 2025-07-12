@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
-
 {% block content %}
+
 <div class="container mt-4">
 
   {% with messages = get_flashed_messages(with_categories=true) %}
@@ -15,7 +15,7 @@
   {% endwith %}
 
   {% for category, products in products_by_category.items() %}
-    <section class="category-section">
+    <section class="category-section mb-5">
       <h3 class="mb-3">{{ category }}</h3>
       <div class="row row-cols-1 row-cols-md-3 g-4">
 
@@ -37,16 +37,30 @@
 
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
-                <p class="card-text mb-1"><strong>السعر:</strong> {{ product.price | format_price }} جنيه سوداني</p>
+                <p class="card-text mb-1"><strong>السعر:</strong> 
+                  {% if product.price.replace(',', '').isdigit() %}
+                    {{ "{:,}".format(product.price.replace(',', '') | int) }} جنيه سوداني
+                  {% else %}
+                    {{ product.price }}
+                  {% endif %}
+                </p>
                 <p class="card-text mb-1"><strong>الوحدة:</strong> {{ product.unit or '-' }}</p>
                 <p class="card-text mb-1"><strong>الكمية:</strong> {{ product.quantity or '-' }}</p>
                 <p class="card-text mb-1"><strong>مكان الإنتاج:</strong> {{ product.origin or '-' }}</p>
                 <p class="card-text mb-1"><strong>تاريخ الإنتاج:</strong> {{ product.production_date or '-' }}</p>
               </div>
               <div class="card-footer bg-white d-flex justify-content-between">
-                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: ....). 🔹 الاسم: 🔹 مكان الاستلام:" target="_blank" class="btn btn-success btn-sm">
+                <!-- زر واتساب -->
+                <a href="https://wa.me/249916399000?text=مرحبًا، أرغب في طلب {{ product.name }} (الكمية: {{ product.quantity or '---' }}). 🔹 الاسم: 🔹 مكان الاستلام:" 
+                   target="_blank" class="btn btn-success btn-sm">
                   اطلب عبر واتساب
                 </a>
+                <!-- زر الحذف يظهر فقط للمشرف -->
+                {% if session.get('logged_in') %}
+                  <form action="{{ url_for('delete_product', product_id=product.id) }}" method="POST" onsubmit="return confirm('هل أنت متأكد من حذف هذا المنتج؟');">
+                    <button type="submit" class="btn btn-danger btn-sm">حذف</button>
+                  </form>
+                {% endif %}
               </div>
             </div>
           </div>
@@ -55,5 +69,7 @@
       </div>
     </section>
   {% endfor %}
+
 </div>
+
 {% endblock %}
