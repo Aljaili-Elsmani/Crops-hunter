@@ -7,17 +7,13 @@
         body { font-family: Arial; direction: rtl; margin: 40px; }
         .product { border: 1px solid #ccc; padding: 10px; margin-bottom: 10px; border-radius: 5px; }
         .category-title { margin-top: 30px; font-size: 24px; color: #333; }
-        .whatsapp-btn, .details-btn {
+        .whatsapp-btn {
             background-color: #25D366;
             color: white;
             padding: 5px 10px;
             border: none;
             border-radius: 3px;
             text-decoration: none;
-            margin-left: 10px;
-        }
-        .details-btn {
-            background-color: #007bff;
         }
         .header {
             display: flex;
@@ -64,13 +60,12 @@
   {% for product in products %}
     <div class="product">
         <strong>{{ product.name }}</strong><br>
-        السعر: {{ product.price }} جنيه سوداني<br>
+        السعر: {{ "{:,}".format(int(product.price.replace(',', ''))) }} جنيه سوداني<br>
         الوحدة: {{ product.unit }}<br>
         {% if product.quantity %}الكمية: {{ product.quantity }}<br>{% endif %}
         {% if product.origin %}مكان الإنتاج: {{ product.origin }}<br>{% endif %}
         {% if product.production_date %}تاريخ الإنتاج: {{ product.production_date }}<br>{% endif %}
-        <a class="details-btn" href="{{ url_for('view_product', product_id=product.id) }}">عرض التفاصيل</a>
-        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }}.\n🔹 الكمية: {{ product.quantity }}\n🔹 مكان الاستلام: ....\n🔹 الاسم: ...." target="_blank">اطلب عبر واتساب</a>
+        <a class="whatsapp-btn" href="https://wa.me/249916399000?text=مرحبًا، أرغب في شراء {{ product.name }} الكمية: {{ product.quantity or '---' }} 🔹 الاسم:  🔹 مكان الاستلام: " target="_blank">اطلب عبر واتساب</a>
     </div>
   {% endfor %}
 {% endfor %}
