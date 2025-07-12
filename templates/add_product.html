@@ -2,73 +2,29 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>إضافة منتج - Crops Hunter</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f8f9fa;
-            text-align: center;
-            padding-top: 50px;
-        }
-        .form-box {
-            width: 400px;
-            margin: auto;
-            background-color: white;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
-        }
-        input, select {
-            width: 90%;
-            padding: 10px;
-            margin-bottom: 15px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
-        button {
-            padding: 10px 20px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .alert {
-            padding: 10px;
-            margin-bottom: 15px;
-            border-radius: 4px;
-        }
-        .success { background-color: #d4edda; color: #155724; }
-        .error { background-color: #f8d7da; color: #721c24; }
-    </style>
+    <title>إضافة منتج</title>
 </head>
 <body>
-
-<div class="form-box">
     <h2>إضافة منتج جديد</h2>
-
     {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
         {% for category, message in messages %}
-          <div class="alert {{ category }}">{{ message }}</div>
+          <div style="background-color: {% if category == 'success' %}#d4edda{% else %}#f8d7da{% endif %}; padding: 10px; margin: 10px 0;">
+            {{ message }}
+          </div>
         {% endfor %}
       {% endif %}
     {% endwith %}
 
-    <form method="POST">
+    <form method="post">
         <input type="text" name="name" placeholder="اسم المنتج" required><br>
-        <input type="text" name="category" placeholder="الفئة (حبوب، بقوليات، لحوم...)" required><br>
-        <input type="text" name="price" placeholder="السعر بالجنيه السوداني" required><br>
-        <input type="text" name="unit" placeholder="الوحدة (كجم، طن...)" required><br>
-        <input type="text" name="quantity" placeholder="الكمية المتوفرة"><br>
+        <input type="text" name="category" placeholder="الفئة (حبوب، بقوليات..)" required><br>
+        <input type="text" name="price" placeholder="السعر (مثال: 5,999)" required><br>
+        <input type="text" name="unit" placeholder="الوحدة (كيلو، طن...)"><br>
+        <input type="text" name="quantity" placeholder="الكمية (مثال: 100 كيلو)"><br>
         <input type="text" name="origin" placeholder="مكان الإنتاج"><br>
-        <input type="date" name="production_date" placeholder="تاريخ الإنتاج"><br>
-        <button type="submit">إضافة المنتج</button>
+        <input type="text" name="production_date" placeholder="تاريخ الإنتاج (مثال: 07/2024)"><br><br>
+        <button type="submit">إضافة</button>
     </form>
-</div>
-
 </body>
 </html>
