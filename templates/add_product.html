@@ -1,47 +1,40 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="container">
-    <h2 class="mb-4">إضافة منتج جديد</h2>
-    <form method="POST" enctype="multipart/form-data">
-        <div class="mb-3">
-            <label>اسم المنتج:</label>
-            <input type="text" name="name" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>الفئة:</label>
-            <select name="category" class="form-control" required>
-                <option value="حبوب">حبوب</option>
-                <option value="بقوليات">بقوليات</option>
-                <option value="خضروات">خضروات</option>
-                <option value="لحوم">لحوم</option>
-                <option value="أخرى">أخرى</option>
-            </select>
-        </div>
-        <div class="mb-3">
-            <label>السعر:</label>
-            <input type="text" name="price" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>الوحدة:</label>
-            <input type="text" name="unit" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label>الكمية:</label>
-            <input type="text" name="quantity" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label>مكان الإنتاج:</label>
-            <input type="text" name="origin" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label>تاريخ الإنتاج (مثال: 2024-07):</label>
-            <input type="month" name="production_date" class="form-control">
-        </div>
-        <div class="mb-3">
-            <label>صورة المنتج:</label>
-            <input type="file" name="image" accept="image/*" class="form-control">
-        </div>
-        <button type="submit" class="btn btn-primary">إضافة</button>
-    </form>
-</div>
-{% endblock %}
+<form method="POST" enctype="multipart/form-data">
+    <div class="mb-3">
+        <label>اسم المنتج</label>
+        <input type="text" name="name" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>الفئة</label>
+        <select name="category" class="form-control" required>
+            <option value="حبوب">حبوب</option>
+            <option value="بقوليات">بقوليات</option>
+            <option value="خضروات">خضروات</option>
+            <option value="لحوم">لحوم</option>
+        </select>
+    </div>
+    <div class="mb-3">
+        <label>السعر</label>
+        <input type="text" name="price" class="form-control" required>
+    </div>
+    <div class="mb-3">
+        <label>الوحدة</label>
+        <input type="text" name="unit" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>الكمية</label>
+        <input type="text" name="quantity" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>مكان الإنتاج</label>
+        <input type="text" name="origin" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>تاريخ الإنتاج (YYYY-MM)</label>
+        <input type="text" name="production_date" class="form-control">
+    </div>
+    <div class="mb-3">
+        <label>صورة المنتج</label>
+        <input type="file" name="image" class="form-control">
+    </div>
+    <button type="submit" class="btn btn-primary">إضافة المنتج</button>
+</form>
